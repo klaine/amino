@@ -186,16 +186,13 @@ async function startMidi() {
 
 const down = new Set();
 const baseNote = () => 12 * (Number($("octave").value) + 1);
-function noteOn(n, vel = 100) { if (down.has(n)) return; down.add(n); send([0x90 | (kbChannel - 1), n, vel]); paint(); }
+function noteOn(n, vel = Number($("vel").value)) { if (down.has(n)) return; down.add(n); send([0x90 | (kbChannel - 1), n, vel]); paint(); }
 function noteOff(n) { if (!down.delete(n)) return; send([0x80 | (kbChannel - 1), n, 0]); paint(); }
 const keyEls = [];
+let keysBoard = null;
 const KEYMAP = "awsedftgyhujk";
 function paint() {
-  const oct = Number($("octave").value);
-  keyEls.forEach((el, i) => {
-    el.classList.toggle("down", down.has(baseNote() + i));
-    if (i % 12 === 0) el.querySelector(".note").textContent = "C" + (oct + i / 12);
-  });
+  keyEls.forEach((el) => el.classList.toggle("down", down.has(Number(el.dataset.note))));
 }
 
 function releaseAll() { [...down].forEach(noteOff); }
@@ -204,7 +201,7 @@ function setOctave(o) {
   if (o < 1 || o > 6) return;
   releaseAll();
   $("octave").value = String(o);
-  paint();
+  layoutKeys(keysBoard);
 }
 
 function typingIn(e) {
@@ -237,31 +234,85 @@ function listenInside(frame) {
   });
 }
 
-function buildKeys() {
-  const NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-  for (let i = 0; i < 25; i++) {
+/** Keys sized to the width (about 34px a white key), like Bizar's on-screen keyboard. */
+function layoutKeys(board) {
+  board.textContent = "";
+  keyEls.length = 0;
+  const width = board.clientWidth;
+  if (!width) return;
+  const whites = Math.max(7, Math.min(36, Math.floor(width / 34)));
+  const ww = width / whites;
+  const first = baseNote();
+  let n = first, wi = 0;
+  while (wi < whites && n <= 127) {
+    const black = [1, 3, 6, 8, 10].includes(n % 12);
     const el = document.createElement("div");
-    const black = [1, 3, 6, 8, 10].includes(i % 12);
-    el.className = "key" + (black ? " black" : "") + (i % 12 === 0 ? " c" : "");
+    el.className = "key" + (black ? " black" : "");
+    el.dataset.note = String(n);
+    if (black) {
+      el.style.left = (wi * ww - ww * 0.32) + "px";
+      el.style.width = (ww * 0.64) + "px";
+    } else {
+      el.style.left = (wi * ww) + "px";
+      el.style.width = ww + "px";
+      if (n % 12 === 0) {
+        const note = document.createElement("span");
+        note.className = "note";
+        note.textContent = "C" + (n / 12 - 1);
+        el.appendChild(note);
+      }
+      wi++;
+    }
+    const i = n - first;
     if (i < KEYMAP.length) {
       const hint = document.createElement("span");
       hint.className = "hint";
       hint.textContent = KEYMAP[i];
       el.appendChild(hint);
     }
-    const note = document.createElement("span");
-    note.className = "note";
-    note.textContent = black ? "" : NAMES[i % 12];
-    el.appendChild(note);
-    el.addEventListener("pointerdown", (e) => {
-      el.setPointerCapture(e.pointerId);
-      noteOn(baseNote() + i, Math.round(40 + 87 * (e.offsetY / el.clientHeight)));
-    });
-    el.addEventListener("pointerup", () => noteOff(baseNote() + i));
-    el.addEventListener("pointercancel", () => noteOff(baseNote() + i));
-    $("keys").appendChild(el);
+    board.appendChild(el);
     keyEls.push(el);
+    n++;
   }
+  paint();
+}
+
+function buildKeys() {
+  const board = document.createElement("div");
+  board.className = "keys-board";
+  $("keys").appendChild(board);
+  new ResizeObserver(() => layoutKeys(board)).observe(board);
+  keysBoard = board;
+
+  /* One pointer per finger; dragging across keys glides from note to note. */
+  const pointers = new Map();
+  const noteAt = (x, y) => {
+    const k = document.elementFromPoint(x, y)?.closest(".key");
+    return k && board.contains(k) ? Number(k.dataset.note) : null;
+  };
+  board.addEventListener("pointerdown", (e) => {
+    const n = noteAt(e.clientX, e.clientY);
+    if (n == null) return;
+    e.preventDefault();
+    try { board.setPointerCapture(e.pointerId); } catch (_) { /* synthetic event */ }
+    pointers.set(e.pointerId, n);
+    noteOn(n);
+  });
+  board.addEventListener("pointermove", (e) => {
+    if (!pointers.has(e.pointerId)) return;
+    const n = noteAt(e.clientX, e.clientY), prev = pointers.get(e.pointerId);
+    if (n == null || n === prev) return;
+    noteOff(prev);
+    pointers.set(e.pointerId, n);
+    noteOn(n);
+  });
+  const lift = (e) => {
+    if (!pointers.has(e.pointerId)) return;
+    noteOff(pointers.get(e.pointerId));
+    pointers.delete(e.pointerId);
+  };
+  board.addEventListener("pointerup", lift);
+  board.addEventListener("pointercancel", lift);
   window.addEventListener("keydown", onKeyDown);
   window.addEventListener("keyup", onKeyUp);
   window.addEventListener("blur", releaseAll);
@@ -315,4 +366,4 @@ document.addEventListener("visibilitychange", () => {
   if (engine && !document.hidden && engine.ctx.state === "suspended") engine.ctx.resume();
 });
 $("midi-in").onchange = () => { midiInputId = $("midi-in").value; };
-$("octave").onchange = () => { releaseAll(); paint(); };
+$("octave").onchange = () => { releaseAll(); layoutKeys(keysBoard); };

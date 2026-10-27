@@ -8,7 +8,8 @@
 # Remote UI (modules/sound_generators/amino, produced by scripts/build.sh --gen)
 # into build/site/.  Serve it with: python3 -m http.server -d build/site
 # Also writes build/amino.html: the whole synth as ONE self-contained file
-# (scripts/build_single.py), and a copy as build/site/amino-standalone.html.
+# (scripts/build_single.py), and a copy as build/site/amino-standalone.html, then updates the
+# local pages branch from it (scripts/pages.sh).
 # Needs zig (brew install zig, or pip install ziglang) and node for the tests.
 set -eu
 
@@ -86,3 +87,4 @@ echo "== single file"
 "$PY" scripts/build_single.py --out "$ROOT/build/amino.html"
 cp "$ROOT/build/amino.html" "$SITE/amino-standalone.html"
 echo "built $SITE ($(du -sh "$SITE" | cut -f1))"
+sh scripts/pages.sh   # build/amino.html as index.html on the local pages branch (push: scripts/pages.sh --push)

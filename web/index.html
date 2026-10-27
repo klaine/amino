@@ -40,13 +40,15 @@
   #error { color: #ff8f8f; min-height: 1.4em; }
   body.running .splash { display: none; }
   body:not(.running) .needs-audio { opacity: .4; pointer-events: none; }
-  .keys { display: flex; height: 74px; padding: 6px 16px 10px; border-top: 1px solid var(--line); user-select: none; touch-action: none; }
-  .key { position: relative; flex: 1; border: 1px solid #333; border-radius: 0 0 4px 4px; background: #d9dee2; color: #445; font-size: 10px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 3px; }
-  .key.black { background: #1a1f24; color: #889; flex: .7; margin: 0 -2.5%; z-index: 1; height: 62%; }
+  .keys { padding: 8px 16px 10px; border-top: 1px solid var(--line); }
+  .keys-board { position: relative; height: 96px; user-select: none; -webkit-user-select: none; touch-action: none; }
+  .key { position: absolute; top: 0; border: 1px solid #0008; border-radius: 0 0 6px 6px; cursor: pointer; }
+  .key:not(.black) { height: 100%; background: #e9ebe3; z-index: 1; }
+  .key.black { height: 60%; background: #22251d; z-index: 2; }
   .key.down { background: var(--accent); }
-  .key.c .note { font-weight: 700; }
+  .key .note { position: absolute; bottom: 4px; left: 0; right: 0; text-align: center; font-size: 9px; color: #555; }
   /* The computer key that plays each note, where there is a keyboard. */
-  .key .hint { position: absolute; top: 4px; font: 9px ui-monospace, Menlo, monospace; color: #7d8790; text-transform: uppercase; }
+  .key .hint { position: absolute; top: 4px; left: 0; right: 0; text-align: center; pointer-events: none; font: 9px ui-monospace, Menlo, monospace; color: #7d8790; text-transform: uppercase; }
   .key.black .hint { color: #6c7780; }
   .for-touch { display: none; }
   @media (hover: none) {
@@ -60,9 +62,8 @@
     .meter { width: 44px; }
     #activity, .route-detail { display: none; }
     details.routing { padding: 6px 10px; }
-    .keys { height: 104px; padding: 6px 8px 10px; }
-    .key:nth-child(n+14) { display: none; }
-    .key.black { margin: 0 -4%; }
+    .keys { padding: 6px 8px 10px; }
+    .keys-board { height: 104px; }
   }
 </style>
 </head>
@@ -77,6 +78,7 @@
   <a class="gallery-link" href="https://klaine.github.io/amino/gallery/" target="_blank" rel="noopener">Preset gallery</a>
   <label class="needs-audio">BPM <input id="bpm" type="number" min="30" max="300" value="120"></label>
   <label class="needs-audio"><input id="run" type="checkbox"> Transport</label>
+  <label class="needs-audio">Velocity <input id="vel" type="range" min="1" max="127" value="100"></label>
   <label class="needs-audio">Octave <select id="octave"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></label>
 </div>
 <details class="routing">

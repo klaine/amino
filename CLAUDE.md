@@ -10,7 +10,8 @@ the product and the document map. This file covers working on the code.
 ```sh
 scripts/build.sh              # contract, native, UI and golden tests, then dsp.so + amino-module.tar.gz
 scripts/build.sh --gen        # run tools/gen/gen.py first (after changing params, presets or src/ UI files)
-scripts/build_web.sh          # WebAssembly site in build/site (needs a --gen build first)
+scripts/build_web.sh          # WebAssembly site in build/site (needs a --gen build first); also updates the local pages branch
+scripts/pages.sh [--push] [--gallery]  # build/amino.html as index.html (+ gallery/) on the `pages` branch
 scripts/deploy.sh [host]      # staged install on a Move; scripts/logs.sh follows the debug log
 python3 tools/remote_ui/dev_server.py   # Remote UI harness on http://localhost:7700, no Move needed
 ```
@@ -40,8 +41,10 @@ python3 tools/remote_ui/dev_server.py   # Remote UI harness on http://localhost:
 
 - `docs/_*` are local copies of Schwung's docs and sources (git-ignored): the ABI reference for all
   modules in this workspace.
-- GitHub Pages serves the `pages` branch (single-file `index.html` from `build/amino.html`, plus `gallery/` from
-  `tools/emulator/gallery.py --site`). It is published by hand; there is no workflow.
+- GitHub Pages serves the `pages` branch, written by `scripts/pages.sh`: one parentless commit with
+  `index.html` (from `build/amino.html`), `.nojekyll` and `gallery/` (carried over from the branch;
+  `--gallery` re-renders it with `tools/emulator/gallery.py --site`). `--push` force-pushes. Never
+  commit to the branch by hand.
 - `../Original reference/` (outside this repo) is the original spec and preset set Amino was built
   from.
 - Crest's effects were adapted from Amino's `src/dsp/fx.c`: a fix here may apply there too.
