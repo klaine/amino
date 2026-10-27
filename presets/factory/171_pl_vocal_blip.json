@@ -1,0 +1,42 @@
+{
+  "fmt": "amino-preset",
+  "v": 1,
+  "index": 171,
+  "name": "PL Vocal Blip",
+  "bank": "Tech House",
+  "category": "PL",
+  "description": "Random-vowel blips",
+  "phrase": "tech_pluck",
+  "bpm": 125,
+  "flags": [
+    "ARP"
+  ],
+  "fx_notes": "FX1 Delay .3 (1/8, PingP .8)",
+  "params": {
+    "fx1_type": "Delay",
+    "patch_gain": 6.5,
+    "fx1_p1": 0.7707,
+    "fx1_p2": 0.5,
+    "fx1_p3": 0.4,
+    "fx1_p4": 0.4,
+    "fx1_p5": 0.8,
+    "fx1_p6": 0.1,
+    "l1_osc_mode": "Clean",
+    "l1_ftype": "LP12",
+    "l1_cutoff": 100.0,
+    "l1_e3_s": 0.0,
+    "l1_e3_r": 0.2,
+    "l1_at_cut": 0.12,
+    "l1_osc1_table": "Choir",
+    "l1_osc1_wave": 0,
+    "l1_osc2_table": "Voice",
+    "l1_osc2_wave": 10,
+    "l1_osc2_level": 0.4,
+    "l1_m1_src": "Random",
+    "l1_m1_dst": "Osc1 Wave",
+    "l1_m1_amt": 1.0,
+    "l1_m2_src": "ModWheel",
+    "l1_m2_dst": "E3 Decay",
+    "l1_m2_amt": 0.25
+  }
+}

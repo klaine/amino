@@ -1,0 +1,16 @@
+{
+  "fmt": "amino-preset",
+  "v": 1,
+  "index": 0,
+  "name": "IN Init",
+  "bank": "Nostalgia",
+  "category": "IN",
+  "description": "Single saw, filter open, no FX",
+  "phrase": "init",
+  "bpm": 120,
+  "flags": [],
+  "fx_notes": "",
+  "params": {
+    "fx_chain": "Serial"
+  }
+}

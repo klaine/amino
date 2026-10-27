@@ -1,0 +1,25 @@
+# Build outputs (scripts/build.sh, scripts/build_web.sh). The module package
+# is attached to a GitHub Release rather than committed.
+build/
+amino-module.tar.gz
+modules/sound_generators/amino/dsp.so
+*.so.o
+*.exe
+*.pdb
+
+# Regenerable: AKWF download (tools/wavegen/fetch_akwf.sh) and preview renders
+# (tools/emulator/render.py)
+tools/wavegen/.cache/
+tools/emulator/out/
+__pycache__/
+*.pyc
+
+# Local copies of Schwung's docs and sources used as reference while building
+# the module; the originals are at https://github.com/charlesvestal/schwung
+docs/_*
+
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/
+.claude/

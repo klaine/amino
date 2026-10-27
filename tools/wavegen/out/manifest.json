@@ -1,0 +1,849 @@
+{
+  "format": {
+    "waves": 64,
+    "samples": 128,
+    "sample_type": "int8",
+    "max_harmonic": 63,
+    "classic_slots": {
+      "61": "Triangle",
+      "62": "Square",
+      "63": "Saw"
+    }
+  },
+  "tables": [
+    {
+      "index": 0,
+      "name": "Basic",
+      "source": "procedural",
+      "recipe": "basic",
+      "license": "MIT (Amino)",
+      "sha256": "19b05f2c2dcff43a576d696ab09dc125a76ec6249ece1c6e0154bced7d8c9b85"
+    },
+    {
+      "index": 1,
+      "name": "Pulse",
+      "source": "procedural",
+      "recipe": "pulse",
+      "license": "MIT (Amino)",
+      "sha256": "91fc3e9d8c73902f248a8554b81b7b9eaad36211932c03708521b66ddeaf9c10"
+    },
+    {
+      "index": 2,
+      "name": "Resonant",
+      "source": "procedural",
+      "recipe": "resonant",
+      "license": "MIT (Amino)",
+      "sha256": "1703686f672a33264fa5a82a21abf643cdf9f17aa10c5b240186aa9f0deb51fa"
+    },
+    {
+      "index": 3,
+      "name": "Resonant 2",
+      "source": "procedural",
+      "recipe": "resonant2",
+      "license": "MIT (Amino)",
+      "sha256": "4182f199d1a79258c6b3bc9cf885f0243e6d5b62122fa011f94a23b2402938cb"
+    },
+    {
+      "index": 4,
+      "name": "Sync",
+      "source": "procedural",
+      "recipe": "sync",
+      "license": "MIT (Amino)",
+      "sha256": "ac6b717394f1e75a32ff9c899919c85681c7dec3013b7229aaed51eb26e322ce"
+    },
+    {
+      "index": 5,
+      "name": "Formant A",
+      "source": "procedural",
+      "recipe": "formant_a",
+      "license": "MIT (Amino)",
+      "sha256": "acec9cdbde2e11ed223eca624c53d0ede12ff41a751a5f6508a888c1689c580d"
+    },
+    {
+      "index": 6,
+      "name": "Formant B",
+      "source": "procedural",
+      "recipe": "formant_b",
+      "license": "MIT (Amino)",
+      "sha256": "fca9703cb5c2beece4ec9ca20b5cea95389dcbc537c584352064cb3c1b9afc26"
+    },
+    {
+      "index": 7,
+      "name": "Harmonic",
+      "source": "procedural",
+      "recipe": "harmonic",
+      "license": "MIT (Amino)",
+      "sha256": "703e5a291bb4937a0ac63805a364587d40a32a96e98fafa671f0f7a534a48bb1"
+    },
+    {
+      "index": 8,
+      "name": "Odd",
+      "source": "procedural",
+      "recipe": "odd",
+      "license": "MIT (Amino)",
+      "sha256": "fdff27da6b96d94b64fe4672ba43bd0de4b2fd1db3622d8199b3de25dac39712"
+    },
+    {
+      "index": 9,
+      "name": "Bell",
+      "source": "procedural",
+      "recipe": "bell",
+      "license": "MIT (Amino)",
+      "sha256": "b4cc7d59f86bc06052d611c530ea4646fbc4ec667bf01f92349760a7586ea42d"
+    },
+    {
+      "index": 10,
+      "name": "Organ",
+      "source": "procedural",
+      "recipe": "organ",
+      "license": "MIT (Amino)",
+      "sha256": "63f5f49e7939e90c20d5a8a8ce6f86cb3e2cd0cfe84665e679dc46d3b97bc0e9"
+    },
+    {
+      "index": 11,
+      "name": "Digital",
+      "source": "procedural",
+      "recipe": "digital",
+      "license": "MIT (Amino)",
+      "sha256": "a753636a83f3a79dc7f9b04ef78edc5a97575f309a6f7a8c3f00ba12b365a661"
+    },
+    {
+      "index": 12,
+      "name": "Noise",
+      "source": "procedural",
+      "recipe": "noise",
+      "license": "MIT (Amino)",
+      "sha256": "da415d17d540f32916dafa1f9ea15c391ba5ba11e486bb3e3615dfa64ec32708"
+    },
+    {
+      "index": 13,
+      "name": "PWM Saw",
+      "source": "procedural",
+      "recipe": "pwm_saw",
+      "license": "MIT (Amino)",
+      "sha256": "bb777bc39f23b0c28bfcb432e40b161dbca039d48f9f6491ffdf1134bbc00f64"
+    },
+    {
+      "index": 14,
+      "name": "Fold",
+      "source": "procedural",
+      "recipe": "fold",
+      "license": "MIT (Amino)",
+      "sha256": "09ae1a78a8f80e31b2ec64d355d36cc4537b8d93e51eb5f10c0e10839e873bce"
+    },
+    {
+      "index": 15,
+      "name": "Steps",
+      "source": "procedural",
+      "recipe": "steps",
+      "license": "MIT (Amino)",
+      "sha256": "c72678b461a8d8480980c1947059dcfaf44f19d132b53442dd3eb1f85733ac92"
+    },
+    {
+      "index": 16,
+      "name": "Strings",
+      "source": "procedural",
+      "recipe": "strings",
+      "license": "MIT (Amino)",
+      "sha256": "c7c2769a3698b25ff48c5278180af7ecbb315978afb2623f23102de99f57bef8"
+    },
+    {
+      "index": 17,
+      "name": "Brass",
+      "source": "procedural",
+      "recipe": "brass",
+      "license": "MIT (Amino)",
+      "sha256": "44bedaa68be467e2274c08504c4e0164ab845976419f9a6cece482dab1389963"
+    },
+    {
+      "index": 18,
+      "name": "Bass Spectra",
+      "source": "procedural",
+      "recipe": "bass_spectra",
+      "license": "MIT (Amino)",
+      "sha256": "f3ce87eaa7fc54da244b5c1cbd1454399c063ab009c99f0b3ce705012377dd11"
+    },
+    {
+      "index": 19,
+      "name": "Choir",
+      "source": "procedural",
+      "recipe": "choir",
+      "license": "MIT (Amino)",
+      "sha256": "c3ce3b8a35d53b4fedf385a81842a204afc14d277ef00af8c53fc750db4321b8"
+    },
+    {
+      "index": 20,
+      "name": "Glass",
+      "source": "procedural",
+      "recipe": "glass",
+      "license": "MIT (Amino)",
+      "sha256": "a7bc1e21016731d482f422f4a3a4cc0772c47fa61e7a9064a997da5bfcf4783a"
+    },
+    {
+      "index": 21,
+      "name": "Chaos",
+      "source": "procedural",
+      "recipe": "chaos",
+      "license": "MIT (Amino)",
+      "sha256": "455664f5bf96b15512c8c7a26da5941d3c220b3c4eccd5aa00ce1912c282de9c"
+    },
+    {
+      "index": 22,
+      "name": "Comb",
+      "source": "procedural",
+      "recipe": "comb",
+      "license": "MIT (Amino)",
+      "sha256": "ed55ea0f3f0f297e716fc75eaec78ae288de150c15be9f7fdd4861aa798483c4"
+    },
+    {
+      "index": 23,
+      "name": "PhaseDist",
+      "source": "procedural",
+      "recipe": "phase_dist",
+      "license": "MIT (Amino)",
+      "sha256": "7943257be1195ce3bfa8176afcd71ded7f0fac5d7509794f63dcd051c5534ff8"
+    },
+    {
+      "index": 24,
+      "name": "Fractal",
+      "source": "procedural",
+      "recipe": "fractal",
+      "license": "MIT (Amino)",
+      "sha256": "67d293fc53cead29805d9dc5e865760dfea7ddbaf5af1ddf2211eaf41e4afafe"
+    },
+    {
+      "index": 25,
+      "name": "Upper",
+      "source": "procedural",
+      "recipe": "upper",
+      "license": "MIT (Amino)",
+      "sha256": "d2af6d3a33725822f83a6c20a25e7d62fa5bcd4e35c9871e402ca3f79b2c8ec8"
+    },
+    {
+      "index": 26,
+      "name": "Clav",
+      "source": "procedural",
+      "recipe": "clav",
+      "license": "MIT (Amino)",
+      "sha256": "41b02305b092ba6767faa4afe45d94439ecbbcf82eda9dab2970e8b9a4c9dae1"
+    },
+    {
+      "index": 27,
+      "name": "Breath",
+      "source": "procedural",
+      "recipe": "breath",
+      "license": "MIT (Amino)",
+      "sha256": "3e0ea7df32bcaad8003837000fc4f82e2881e6febeb54b290a4ac4e269db295c"
+    },
+    {
+      "index": 28,
+      "name": "SqSync",
+      "source": "procedural",
+      "recipe": "sq_sync",
+      "license": "MIT (Amino)",
+      "sha256": "7cba32b40be6d84565a6d36e7fecc97c4e7e3ed060b4bbd49e6a7ddefb435e28"
+    },
+    {
+      "index": 29,
+      "name": "Metal",
+      "source": "procedural",
+      "recipe": "metal",
+      "license": "MIT (Amino)",
+      "sha256": "37b6293fa1a3d25cbb8be70972b611fbc4e7cbf290ff046121194adecfe853ae"
+    },
+    {
+      "index": 30,
+      "name": "Stack",
+      "source": "procedural",
+      "recipe": "stack",
+      "license": "MIT (Amino)",
+      "sha256": "71e38cb61bf73fd73e71cbe7d3a1eb8bc1ff3863f7a610f4ee98003d3838f2d0"
+    },
+    {
+      "index": 31,
+      "name": "Granite",
+      "source": "procedural",
+      "recipe": "granite",
+      "license": "MIT (Amino)",
+      "sha256": "bf9dd2e05b8968ba7378f7293baf75f0cf7b1f6427e5b5846800bd86ce1f5034"
+    },
+    {
+      "index": 32,
+      "name": "Cello",
+      "source": "akwf",
+      "akwf_folder": "AKWF_cello",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_cello_0019.wav",
+        "AKWF_cello_0017.wav",
+        "AKWF_cello_0011.wav",
+        "AKWF_cello_0002.wav",
+        "AKWF_cello_0016.wav",
+        "AKWF_cello_0009.wav",
+        "AKWF_cello_0013.wav",
+        "AKWF_cello_0001.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "5f626ab53c98847a9b895e1919616f90bcde25dd2486b266ba2595f0a301c585"
+    },
+    {
+      "index": 33,
+      "name": "Violin",
+      "source": "akwf",
+      "akwf_folder": "AKWF_violin",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_violin_0014.wav",
+        "AKWF_violin_0012.wav",
+        "AKWF_violin_0010.wav",
+        "AKWF_violin_0006.wav",
+        "AKWF_violin_0005.wav",
+        "AKWF_violin_0003.wav",
+        "AKWF_violin_0002.wav",
+        "AKWF_violin_0001.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "46ebc8bb56683b11ec0a09d39b9ad64c7fcec7d8e5b81b07c87984fdb2887112"
+    },
+    {
+      "index": 34,
+      "name": "Voice",
+      "source": "akwf",
+      "akwf_folder": "AKWF_hvoice",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_hvoice_0083.wav",
+        "AKWF_hvoice_0080.wav",
+        "AKWF_hvoice_0033.wav",
+        "AKWF_hvoice_0067.wav",
+        "AKWF_hvoice_0043.wav",
+        "AKWF_hvoice_0030.wav",
+        "AKWF_hvoice_0044.wav",
+        "AKWF_hvoice_0096.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "fa9b5c92aae970359ee2073dc6e86f30633a5fb56aefe3e5991d5007a2182547"
+    },
+    {
+      "index": 35,
+      "name": "EPiano",
+      "source": "akwf",
+      "akwf_folder": "AKWF_epiano",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_epiano_0019.wav",
+        "AKWF_epiano_0060.wav",
+        "AKWF_epiano_0029.wav",
+        "AKWF_epiano_0014.wav",
+        "AKWF_epiano_0073.wav",
+        "AKWF_epiano_0047.wav",
+        "AKWF_epiano_0046.wav",
+        "AKWF_epiano_0008.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "f391a27c2622b4e7120ce971136f2cb3782cf683ce40976c0da5c0059e66576a"
+    },
+    {
+      "index": 36,
+      "name": "Clavinet",
+      "source": "akwf",
+      "akwf_folder": "AKWF_clavinet",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_clavinet_0018.wav",
+        "AKWF_clavinet_0026.wav",
+        "AKWF_clavinet_0012.wav",
+        "AKWF_clavinet_0016.wav",
+        "AKWF_clavinet_0022.wav",
+        "AKWF_clavinet_0007.wav",
+        "AKWF_clavinet_0005.wav",
+        "AKWF_clavinet_0001.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "0b04e660630207377a42c54d83073a024a116bf6ad28d25f6c2dcff0ad5e1093"
+    },
+    {
+      "index": 37,
+      "name": "E-Organ",
+      "source": "akwf",
+      "akwf_folder": "AKWF_eorgan",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_eorgan_0054.wav",
+        "AKWF_eorgan_0016.wav",
+        "AKWF_eorgan_0108.wav",
+        "AKWF_eorgan_0119.wav",
+        "AKWF_eorgan_0136.wav",
+        "AKWF_eorgan_0051.wav",
+        "AKWF_eorgan_0076.wav",
+        "AKWF_eorgan_0042.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "b57fd27ed2a10f913bc84a7832edabe5b62f5ea71b8b85218f05dd735918e931"
+    },
+    {
+      "index": 38,
+      "name": "FM",
+      "source": "akwf",
+      "akwf_folder": "AKWF_fmsynth",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_fmsynth_0070.wav",
+        "AKWF_fmsynth_0023.wav",
+        "AKWF_fmsynth_0031.wav",
+        "AKWF_fmsynth_0112.wav",
+        "AKWF_fmsynth_0005.wav",
+        "AKWF_fmsynth_0118.wav",
+        "AKWF_fmsynth_0059.wav",
+        "AKWF_fmsynth_0026.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "8cecde31c8eaf51c45995816b95bd9ce3e4ecf0039a8b1d813773ce1a5bb118e"
+    },
+    {
+      "index": 39,
+      "name": "Chip",
+      "source": "akwf",
+      "akwf_folder": "AKWF_oscchip",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_oscchip_0095.wav",
+        "AKWF_oscchip_0156.wav",
+        "AKWF_oscchip_0017.wav",
+        "AKWF_oscchip_0006.wav",
+        "AKWF_oscchip_0058.wav",
+        "AKWF_oscchip_0082.wav",
+        "AKWF_oscchip_0066.wav",
+        "AKWF_oscchip_0064.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "accff786b553b309a9f49676e44733afd835eaf1fde96bb7e6b878a302e71e10"
+    },
+    {
+      "index": 40,
+      "name": "VGame",
+      "source": "akwf",
+      "akwf_folder": "AKWF_vgame",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_vgame_0096.wav",
+        "AKWF_vgame_0049.wav",
+        "AKWF_vgame_0093.wav",
+        "AKWF_vgame_0063.wav",
+        "AKWF_vgame_0127.wav",
+        "AKWF_vgame_0137.wav",
+        "AKWF_vgame_0009.wav",
+        "AKWF_vgame_0113.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "04bbae658cf351e9de1a30ed338df75e1be72d1d0782b1393828e150fee43c5d"
+    },
+    {
+      "index": 41,
+      "name": "Sax",
+      "source": "akwf",
+      "akwf_folder": "AKWF_altosax",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_altosax_0016.wav",
+        "AKWF_altosax_0003.wav",
+        "AKWF_altosax_0013.wav",
+        "AKWF_altosax_0022.wav",
+        "AKWF_altosax_0008.wav",
+        "AKWF_altosax_0007.wav",
+        "AKWF_altosax_0012.wav",
+        "AKWF_altosax_0018.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "2054be1365ece1326827f60235b00cd78ab021fa6deba81b3f841ffcf8ac60f6"
+    },
+    {
+      "index": 42,
+      "name": "Flute",
+      "source": "akwf",
+      "akwf_folder": "AKWF_flute",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_flute_0014.wav",
+        "AKWF_flute_0009.wav",
+        "AKWF_flute_0010.wav",
+        "AKWF_flute_0007.wav",
+        "AKWF_flute_0015.wav",
+        "AKWF_flute_0005.wav",
+        "AKWF_flute_0004.wav",
+        "AKWF_flute_0003.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "486a4728f46708a164f145422035a26ac3f313e44352d7371454801034cb8230"
+    },
+    {
+      "index": 43,
+      "name": "Overtone",
+      "source": "akwf",
+      "akwf_folder": "AKWF_overtone",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_overtone_0001.wav",
+        "AKWF_overtone_0011.wav",
+        "AKWF_overtone_0029.wav",
+        "AKWF_overtone_0004.wav",
+        "AKWF_overtone_0022.wav",
+        "AKWF_overtone_0032.wav",
+        "AKWF_overtone_0042.wav",
+        "AKWF_overtone_0036.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "c01569e29977ceb5f408319c6bb993c497717527d3b387ca19805caf127788fb"
+    },
+    {
+      "index": 44,
+      "name": "Crushed",
+      "source": "akwf",
+      "akwf_folder": "AKWF_bitreduced",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_sin8bit.wav",
+        "AKWF_bitreduced_0010.wav",
+        "AKWF_bitreduced_0021.wav",
+        "AKWF_bitreduced_0036.wav",
+        "AKWF_saw2bit.wav",
+        "AKWF_bitreduced_0033.wav",
+        "AKWF_bitreduced_0040.wav",
+        "AKWF_bitreduced_0032.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "cbf98fef3a1ed807f4f4db9c7a8c1eacca5df982248bfa1d1c707c4666783537"
+    },
+    {
+      "index": 45,
+      "name": "Granular",
+      "source": "akwf",
+      "akwf_folder": "AKWF_granular",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_granular_0022.wav",
+        "AKWF_granular_0009.wav",
+        "AKWF_granular_0041.wav",
+        "AKWF_granular_0021.wav",
+        "AKWF_granular_0018.wav",
+        "AKWF_granular_0003.wav",
+        "AKWF_granular_0007.wav",
+        "AKWF_granular_0015.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "bdff9e46f6fc5066043d113f0185069fd16e08047e36408310087e4cee38775d"
+    },
+    {
+      "index": 46,
+      "name": "Upright",
+      "source": "akwf",
+      "akwf_folder": "AKWF_dbass",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_dbass_0031.wav",
+        "AKWF_dbass_0040.wav",
+        "AKWF_dbass_0051.wav",
+        "AKWF_dbass_0026.wav",
+        "AKWF_dbass_0055.wav",
+        "AKWF_dbass_0041.wav",
+        "AKWF_dbass_0009.wav",
+        "AKWF_dbass_0049.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "2a3577a5f48e7af181cb8b27fa40ffd88ba975288b779b5ed743a92fb9741023"
+    },
+    {
+      "index": 47,
+      "name": "Piano",
+      "source": "akwf",
+      "akwf_folder": "AKWF_piano",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_piano_0010.wav",
+        "AKWF_piano_0020.wav",
+        "AKWF_piano_0006.wav",
+        "AKWF_piano_0005.wav",
+        "AKWF_piano_0004.wav",
+        "AKWF_piano_0014.wav",
+        "AKWF_piano_0009.wav",
+        "AKWF_piano_0022.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "c5b412b680a21fd533b64e800126d88a2c499a2d0598b8e0f0f46888c1054050"
+    },
+    {
+      "index": 48,
+      "name": "Even",
+      "source": "procedural",
+      "recipe": "even",
+      "license": "MIT (Amino)",
+      "sha256": "2fe92b9d82d1cc833387342924be6bb87d5351a7b7243f490e3b8e45ae2bf69e"
+    },
+    {
+      "index": 49,
+      "name": "Partials",
+      "source": "procedural",
+      "recipe": "partials",
+      "license": "MIT (Amino)",
+      "sha256": "4f688a6a1f045a2ce45bb1b45c1978670f8824cfea1d90dc97ba332cf560938f"
+    },
+    {
+      "index": 50,
+      "name": "Feedback",
+      "source": "procedural",
+      "recipe": "feedback",
+      "license": "MIT (Amino)",
+      "sha256": "b5ec9dbac416ee29bdab1b08bbb69aa8e46399a69c0d9c824756b4630ed756c1"
+    },
+    {
+      "index": 51,
+      "name": "Window",
+      "source": "procedural",
+      "recipe": "window",
+      "license": "MIT (Amino)",
+      "sha256": "61436ead1c1ab69ae1ff2b0e53eedd7b8e9baaf35364faa2f4162ae180be4d77"
+    },
+    {
+      "index": 52,
+      "name": "Rave",
+      "source": "procedural",
+      "recipe": "rave",
+      "license": "MIT (Amino)",
+      "sha256": "9c7914bbcd9a14f4350303cc7f91e51b1cfa8e69883ba7cd73b38edcc3098ade"
+    },
+    {
+      "index": 53,
+      "name": "Octaves",
+      "source": "procedural",
+      "recipe": "octaves",
+      "license": "MIT (Amino)",
+      "sha256": "34374c2516f0d2d38fdc229c3eef9b3c7395f52d96b0656eb5ae51ef9013854b"
+    },
+    {
+      "index": 54,
+      "name": "Logic",
+      "source": "procedural",
+      "recipe": "logic",
+      "license": "MIT (Amino)",
+      "sha256": "f8a0740e3469ac6b1074ac1ff0b9ecedbbd90cf5c6a20b51a4c06b6e6a9b96ae"
+    },
+    {
+      "index": 55,
+      "name": "Reed",
+      "source": "procedural",
+      "recipe": "reed",
+      "license": "MIT (Amino)",
+      "sha256": "f1f87e017fd22d66c03e0405b19ab3419985eb2ed2b0bbf25ab71f36c8ac6f1c"
+    },
+    {
+      "index": 56,
+      "name": "Pluck",
+      "source": "procedural",
+      "recipe": "pluck",
+      "license": "MIT (Amino)",
+      "sha256": "a675e7a131dbc6b9e6a504f30967bc27e0207b18c1a7aa9e333d7d3dcacddaa0"
+    },
+    {
+      "index": 57,
+      "name": "Sweep",
+      "source": "procedural",
+      "recipe": "sweep",
+      "license": "MIT (Amino)",
+      "sha256": "a0b2afdf10afebb2cd5b8730ab40e219b746264df77e3978f1e702ca619e36fa"
+    },
+    {
+      "index": 58,
+      "name": "Chord",
+      "source": "procedural",
+      "recipe": "chord",
+      "license": "MIT (Amino)",
+      "sha256": "20fbfee92803ee5203bef69242a4592caa1e8bcf2277b65bdf99e47e32a73913"
+    },
+    {
+      "index": 59,
+      "name": "Vosim",
+      "source": "procedural",
+      "recipe": "vosim",
+      "license": "MIT (Amino)",
+      "sha256": "f09c302f5e1eb3e252681530c027dad03829f15bf657f61cb822cdf1ddb3b8d3"
+    },
+    {
+      "index": 60,
+      "name": "Scanned",
+      "source": "procedural",
+      "recipe": "scanned",
+      "license": "MIT (Amino)",
+      "sha256": "a938c2a75e2e12ad90e02f61c2b1b8639ac2b65d4ac4145f36b593d52e18360f"
+    },
+    {
+      "index": 61,
+      "name": "Prime",
+      "source": "procedural",
+      "recipe": "prime",
+      "license": "MIT (Amino)",
+      "sha256": "3f114d7064cdb3e06f5c67331ca1f7721837264d619e098fc67b478dc75932d6"
+    },
+    {
+      "index": 62,
+      "name": "SineSync",
+      "source": "procedural",
+      "recipe": "sine_sync",
+      "license": "MIT (Amino)",
+      "sha256": "660ce6b33e30c8c4e1700a9a8483df6469298a1883769d76626675b2d30db393"
+    },
+    {
+      "index": 63,
+      "name": "Mallet",
+      "source": "procedural",
+      "recipe": "mallet",
+      "license": "MIT (Amino)",
+      "sha256": "0f7ac2da3af8d145366562ba2e124b54ca6eb6dd694acb60b40341a53f597544"
+    },
+    {
+      "index": 64,
+      "name": "Mixer",
+      "source": "procedural",
+      "recipe": "mixer",
+      "license": "MIT (Amino)",
+      "sha256": "a26eb21b8b58a7b15ecc09f630d46097da1ae7c97b73c8adb32c937ee1b7eea1"
+    },
+    {
+      "index": 65,
+      "name": "Sub",
+      "source": "procedural",
+      "recipe": "sub",
+      "license": "MIT (Amino)",
+      "sha256": "51cb2dcc2fb85f6b918ff4dcb207376e56023d7f6dab5292dd1a5eb64238ee2d"
+    },
+    {
+      "index": 66,
+      "name": "Notch",
+      "source": "procedural",
+      "recipe": "notch",
+      "license": "MIT (Amino)",
+      "sha256": "a432b2b83696e89bac1592d34d963e5338157b3fa07638c958688929f82ac2b8"
+    },
+    {
+      "index": 67,
+      "name": "Drive",
+      "source": "procedural",
+      "recipe": "drive",
+      "license": "MIT (Amino)",
+      "sha256": "39b19b35c7e23963ec71ac6b4a09b9a0484f9538207354afdd852ffa84a46a84"
+    },
+    {
+      "index": 68,
+      "name": "E-Bass",
+      "source": "akwf",
+      "akwf_folder": "AKWF_ebass",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_ebass_0026.wav",
+        "AKWF_ebass_0003.wav",
+        "AKWF_ebass_0069.wav",
+        "AKWF_ebass_0047.wav",
+        "AKWF_ebass_0031.wav",
+        "AKWF_ebass_0036.wav",
+        "AKWF_ebass_0041.wav",
+        "AKWF_ebass_0023.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "2caabe93cdb6b3caf9bb2eaf625ae0ed8e077527f2da3c1a23903d622773d109"
+    },
+    {
+      "index": 69,
+      "name": "E-Guitar",
+      "source": "akwf",
+      "akwf_folder": "AKWF_eguitar",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_eguitar_0002.wav",
+        "AKWF_eguitar_0003.wav",
+        "AKWF_eguitar_0005.wav",
+        "AKWF_eguitar_0021.wav",
+        "AKWF_eguitar_0016.wav",
+        "AKWF_eguitar_0018.wav",
+        "AKWF_eguitar_0004.wav",
+        "AKWF_eguitar_0017.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "83fb53056ca2b14ae2022ff714b899d740d275b4b305b377cf3396b1cb826a4b"
+    },
+    {
+      "index": 70,
+      "name": "Distorted",
+      "source": "akwf",
+      "akwf_folder": "AKWF_distorted",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_distorted_0020.wav",
+        "AKWF_distorted_0021.wav",
+        "AKWF_distorted_0003.wav",
+        "AKWF_distorted_0034.wav",
+        "AKWF_distorted_0014.wav",
+        "AKWF_distorted_0033.wav",
+        "AKWF_distorted_0028.wav",
+        "AKWF_distorted_0025.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "6bbca840b83257c3fcaf92f6f09168804ab649b1560250e818c18dbe32a78e4d"
+    },
+    {
+      "index": 71,
+      "name": "Theremin",
+      "source": "akwf",
+      "akwf_folder": "AKWF_theremin",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_theremin_0004.wav",
+        "AKWF_theremin_0005.wav",
+        "AKWF_theremin_0006.wav",
+        "AKWF_theremin_0003.wav",
+        "AKWF_theremin_0011.wav",
+        "AKWF_theremin_0021.wav",
+        "AKWF_theremin_0012.wav",
+        "AKWF_theremin_0022.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "95a1bc82076e4c30e591b1fc331a2bb852a4c27868e98c7ee97e130fb9a46761"
+    },
+    {
+      "index": 72,
+      "name": "Raw",
+      "source": "akwf",
+      "akwf_folder": "AKWF_raw",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_raw_0014.wav",
+        "AKWF_raw_0027.wav",
+        "AKWF_raw_0017.wav",
+        "AKWF_raw_0023.wav",
+        "AKWF_raw_0016.wav",
+        "AKWF_raw_0001.wav",
+        "AKWF_raw_0015.wav",
+        "AKWF_raw_0031.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "ebec2ed2e867004e922cd9521f974ab83e8ccb4ed4302ea6f5d4f7739b30b98b"
+    },
+    {
+      "index": 73,
+      "name": "Drawn",
+      "source": "akwf",
+      "akwf_folder": "AKWF_hdrawn",
+      "akwf_commit": "8de90bf94376670947369e69de0af6b9fbd19286",
+      "keyframes": [
+        "AKWF_hdrawn_0015.wav",
+        "AKWF_hdrawn_0023.wav",
+        "AKWF_hdrawn_0033.wav",
+        "AKWF_hdrawn_0034.wav",
+        "AKWF_hdrawn_0032.wav",
+        "AKWF_hdrawn_0022.wav",
+        "AKWF_hdrawn_0027.wav",
+        "AKWF_hdrawn_0026.wav"
+      ],
+      "license": "CC0-1.0 (AKWF-FREE by Kristoffer Ekstrand)",
+      "sha256": "25f5019dbb190375ff31821cb74485d4a1e8deb7866ba50b384b9d1de3c5cfdc"
+    }
+  ]
+}

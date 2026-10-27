@@ -1,0 +1,33 @@
+{
+  "fmt": "amino-preset",
+  "v": 1,
+  "index": 1,
+  "name": "BS Stepped Sub",
+  "bank": "Nostalgia",
+  "category": "BS",
+  "description": "Round sub with saw edge",
+  "phrase": "bass",
+  "bpm": 120,
+  "flags": [],
+  "fx_notes": "",
+  "params": {
+    "patch_gain": 4.0,
+    "l1_poly": "Mono",
+    "l1_glide": 0.1,
+    "l1_cutoff": 60.0,
+    "l1_res": 0.15,
+    "l1_fenv": 0.35,
+    "l1_fvel": 0.3,
+    "l1_e2_d": 0.25,
+    "l1_e2_s": 0.0,
+    "l1_e2_r": 0.2,
+    "l1_e3_r": 0.15,
+    "l1_at_cut": 0.15,
+    "l1_osc1_wave": 0,
+    "l1_osc2_semi": -12,
+    "l1_osc2_level": 0.35,
+    "l1_m1_src": "ModWheel",
+    "l1_m1_dst": "Cutoff",
+    "l1_m1_amt": 0.2
+  }
+}

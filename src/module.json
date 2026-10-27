@@ -1,0 +1,20 @@
+{
+    "id": "amino",
+    "name": "Amino",
+    "version": "1.0.0",
+    "abbrev": "AMNO",
+    "api_version": 2,
+    "ui_chain": "ui_chain.js",
+    "description": "Four-layer 8-bit wavetable synth with two oscillators, dirt, drive, a resonant filter, four envelopes, two LFOs, eight mod slots and two multi-effect slots.",
+    "author": "AI & Klaine",
+    "dsp": "dsp.so",
+    "component_type": "sound_generator",
+    "capabilities": {
+        "chainable": true,
+        "midi_in": true,
+        "audio_out": true,
+        "aftertouch": true,
+        "claims_edit_ccs": true,
+        "default_forward_channel": -2
+    }
+}
