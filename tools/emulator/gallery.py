@@ -3,7 +3,12 @@
 
 Open the file directly in a browser; data and waveform peaks are embedded, the
 page plays the WAVs next to it.
+
+With --site DIR it instead writes a publishable copy (DIR/index.html plus MP3s in
+DIR/audio/, without the before_* A/B takes) for GitHub Pages. MP3 encoding needs
+the lameenc package (pip install lameenc).
 """
+import argparse
 import json
 import math
 import struct
@@ -50,17 +55,35 @@ def summary(params):
     return out
 
 
-def main(fx=True):
+def encode_mp3(wav, mp3, kbps):
+    import lameenc
+    with wave.open(str(wav), "rb") as w:
+        ch, rate, pcm = w.getnchannels(), w.getframerate(), w.readframes(w.getnframes())
+    enc = lameenc.Encoder()
+    enc.set_bit_rate(kbps)
+    enc.set_in_sample_rate(rate)
+    enc.set_channels(ch)
+    enc.set_quality(2)
+    mp3.write_bytes(enc.encode(pcm) + enc.flush())
+
+
+def main(fx=True, site=None, kbps=96):
     items = []
     # out/before_<label>/NNN_name.wav = earlier renders to A/B against (newest folder first)
-    compare = sorted((d for d in OUT.glob("before_*") if d.is_dir()),
-                     key=lambda d: d.stat().st_mtime, reverse=True)
+    compare = [] if site else sorted((d for d in OUT.glob("before_*") if d.is_dir()),
+                                     key=lambda d: d.stat().st_mtime, reverse=True)
+    if site:
+        (site / "audio").mkdir(parents=True, exist_ok=True)
     for f in sorted(PRESETS.glob("*.json")):
         wav = OUT / f"{f.stem}.wav"
         if not wav.exists():
             continue
         doc = json.loads(f.read_text())
         peaks, peak, rms, secs = analyse(wav)
+        file = wav.name
+        if site:
+            file = f"audio/{f.stem}.mp3"
+            encode_mp3(wav, site / file, kbps)
         alts = []
         for d in compare:
             old = d / wav.name
@@ -73,15 +96,17 @@ def main(fx=True):
             "i": doc["index"], "name": doc["name"], "bank": doc["bank"], "cat": doc["category"],
             "desc": doc.get("description", ""), "phrase": doc["phrase"], "flags": doc["flags"],
             "bpm": doc.get("bpm", 120),
-            "fx": doc["fx_notes"], "file": wav.name, "peaks": peaks, "peak": peak, "rms": rms,
+            "fx": doc["fx_notes"], "file": file, "peaks": peaks, "peak": peak, "rms": rms,
             "secs": secs, "summary": summary(doc["params"]), "params": doc["params"],
             "alts": alts,
         })
     html = TEMPLATE.replace("/*DATA*/[]", json.dumps(items, ensure_ascii=False))
     html = html.replace("__MODE__", "engine renders with FX" if fx else "dry engine renders · FX bypassed")
     html = html.replace("__FXLABEL__", "FX: " if fx else "FX (bypassed): ")
-    (OUT / "index.html").write_text(html)
-    print(f"{len(items)} presets -> {OUT / 'index.html'}")
+    html = html.replace("__BACKLINK__", ' · <a href="../">Try the synth in your browser</a>' if site else "")
+    dest = (site or OUT) / "index.html"
+    dest.write_text(html)
+    print(f"{len(items)} presets -> {dest}")
 
 
 TEMPLATE = r"""<!doctype html>
@@ -132,7 +157,7 @@ footer b { color:var(--fg); }
 </style></head>
 <body>
 <header>
-  <h1>Amino preset previews <span>__MODE__</span></h1>
+  <h1>Amino preset previews <span>__MODE__</span><span>__BACKLINK__</span></h1>
   <div class="controls">
     <input type="search" id="q" placeholder="Search name, description, wavetable…">
     <span id="banks"></span><span id="cats"></span>
@@ -323,4 +348,8 @@ render();
 """
 
 if __name__ == "__main__":
-    main()
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("--site", type=Path, help="write a publishable gallery (MP3s) into this directory")
+    ap.add_argument("--kbps", type=int, default=96, help="MP3 bit rate for --site (default 96)")
+    a = ap.parse_args()
+    main(site=a.site, kbps=a.kbps)

@@ -78,6 +78,7 @@ python3 tools/emulator/extract_presets.py      # bake the trims and build --gen 
 # render previews with the compiled engine
 scripts/build.sh                               # builds build/libamino_host.{dylib,so}
 python3 tools/emulator/render.py               # all 324 presets, with FX (~5 s + gallery)
+python3 tools/emulator/gallery.py --site DIR   # publishable gallery with MP3s (needs `pip install lameenc`); the live one is /gallery/ on the pages branch
 python3 tools/emulator/render.py 3 84 112      # selected indices
 python3 tools/emulator/render.py --dry         # FX bypassed
 

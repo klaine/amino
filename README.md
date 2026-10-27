@@ -9,6 +9,9 @@ an eight-slot mod matrix, expression and two multi-effect slots, with an
 interface designed from the ground up for Move's 8 touch-sensitive encoders,
 jog wheel, pads and 128×64 display.
 
+**Listen first:** [preset gallery](https://klaine.github.io/amino/gallery/) (all 324 factory
+presets, audio previews) · [play it in your browser](https://klaine.github.io/amino/) (WebAssembly build, WebMIDI).
+
 ## Goals in one paragraph
 
 Sound like a Protein: gritty, aliased, 8-bit stepped wavetables through a warm
