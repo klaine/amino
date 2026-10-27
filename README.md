@@ -128,9 +128,9 @@ keyboard (Chrome, Edge, Opera; Safari has no WebMIDI), the computer keys A-K
 on-screen keys (letters show which computer key plays each; a phone gets one
 octave of larger keys). **MIDI channels -> layers** assigns each layer Omni, Off
 or a channel 1-16 (mixing is fine); it switches the engine to its Channel layer
-mode while on, and the summary line shows whether it is on. The patch is remembered in localStorage. `.github/workflows/pages.yml`
-publishes `build/site` to GitHub Pages (Settings -> Pages -> Source: GitHub
-Actions). Sources are in `web/`; see [docs/15](docs/15-implementation-notes.md) §8.
+mode while on, and the summary line shows whether it is on. The patch is remembered in localStorage.
+GitHub Pages serves the `pages` branch, which holds `build/amino.html` as
+`index.html` and the preset gallery. Sources are in `web/`; see [docs/15](docs/15-implementation-notes.md) §8.
 
 ## Key references
 

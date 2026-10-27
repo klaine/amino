@@ -40,7 +40,8 @@ python3 tools/remote_ui/dev_server.py   # Remote UI harness on http://localhost:
 
 - `docs/_*` are local copies of Schwung's docs and sources (git-ignored): the ABI reference for all
   modules in this workspace.
-- `.github/workflows/pages.yml` publishes the web build from `main` to GitHub Pages.
+- GitHub Pages serves the `pages` branch (single-file `index.html` from `build/amino.html`, plus `gallery/` from
+  `tools/emulator/gallery.py --site`). It is published by hand; there is no workflow.
 - `../Original reference/` (outside this repo) is the original spec and preset set Amino was built
   from.
 - Crest's effects were adapted from Amino's `src/dsp/fx.c`: a fix here may apply there too.
