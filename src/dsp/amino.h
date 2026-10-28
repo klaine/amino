@@ -119,8 +119,10 @@ typedef struct {
     float hp[2], lp[2], hold[2], xp[2], fp[2], cnt;
     /* Compressor */
     float cenv;
-    /* EQ */
+    /* EQ, and the smoothed knobs its coefficients were built for */
     AminoBiquad bq[2][4];
+    float eq_key[6];
+    int eq_ready;
     /* Delay */
     float dt, dtarget, dstart, dfade, df[2], dphase;
     float sync_offset;
@@ -199,6 +201,9 @@ typedef struct AminoInstance {
     int dirty_mods;
     char move_scale_name[24];  /* last Move scale string seen */
     int move_scale_root;
+#ifdef AMINO_PROFILE
+    float cpu_us;              /* smoothed render time, profile builds only */
+#endif
 
     /* Keep last: amino_create zeroes everything before it in one memset. */
     uint8_t fx_arena[2][AMINO_FX_ARENA] __attribute__((aligned(16)));

@@ -436,14 +436,39 @@ static void key_prefix(JOut *o, int first, const char *key) {
     js(o, "\":\"");
 }
 
+/* Unsigned decimal into out (no terminator); returns its length. */
+static int put_uint(char *out, unsigned long long u) {
+    char rev[24];
+    int n = 0;
+    do { rev[n++] = (char)('0' + (int)(u % 10u)); u /= 10u; } while (u);
+    for (int i = 0; i < n; i++) out[i] = rev[n - 1 - i];
+    return n;
+}
+
+/* The text snprintf gives for "%.3f" and "%d", without its cost: a state
+ * read formats some 530 values on the audio thread. x * 1000 is exact in
+ * double for any float, so rint (ties to even, the default rounding mode)
+ * rounds exactly as printf does, and the sign follows signbit as "-0.000"
+ * does. tmp holds at least 40 bytes. */
 static void value_str(const AminoParamDef *d, float v, char *tmp, int n) {
+    (void)n;
+    int len = 0;
     if (d->kind == AMINO_PK_FLOAT) {
         float x = am_clampf(v, d->min, d->max);
-        snprintf(tmp, (size_t)n, "%.3f", (double)x);
+        if (signbit(x)) tmp[len++] = '-';
+        unsigned long long m = (unsigned long long)rint(fabs((double)x) * 1000.0);
+        len += put_uint(tmp + len, m / 1000u);
+        unsigned frac = (unsigned)(m % 1000u);
+        tmp[len++] = '.';
+        tmp[len++] = (char)('0' + frac / 100u);
+        tmp[len++] = (char)('0' + frac / 10u % 10u);
+        tmp[len++] = (char)('0' + frac % 10u);
     } else {
         int iv = (int)floorf(am_clampf(v, d->min, d->max) + 0.5f);
-        snprintf(tmp, (size_t)n, "%d", iv);
+        if (iv < 0) tmp[len++] = '-';
+        len += put_uint(tmp + len, (unsigned long long)(iv < 0 ? -(long long)iv : iv));
     }
+    tmp[len] = 0;
 }
 
 static int state_build(AminoInstance *in, char *buf, int len) {
@@ -466,12 +491,15 @@ static int state_build(AminoInstance *in, char *buf, int len) {
         js(&o, tmp);
         jc(&o, '"');
     }
-    char key[AM_KEYMAX];
     for (int li = 0; li < AMINO_MAX_LAYERS; li++) {
+        const char layer[4] = { 'l', (char)('1' + li), '_', 0 };
         for (int i = 0; i < AMINO_LAYER_PARAM_COUNT; i++) {
             const AminoParamDef *d = &amino_layer_params[i];
-            snprintf(key, sizeof key, "l%d_%s", li + 1, d->key);
-            key_prefix(&o, 0, key);
+            jc(&o, ',');
+            jc(&o, '"');
+            js(&o, layer);
+            js(&o, d->key);
+            js(&o, "\":\"");
             value_str(d, amino_param_value(in, li, i), tmp, sizeof tmp);
             js(&o, tmp);
             jc(&o, '"');

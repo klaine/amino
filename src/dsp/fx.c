@@ -281,8 +281,6 @@ static int fx_alloc(AminoInstance *in, AminoFxSlot *s, int type) {
         s->st.dt = -1.0f;
         s->st.dstart = -1.0f;
         s->st.dfade = 1.0f;
-        s->st.dstart = -1.0f;
-        s->st.dfade = 1.0f;
         break;
     }
     case 9:                            /* Reverb */
@@ -754,7 +752,9 @@ static void fx_comp(AminoFxSlot *s, float *l, float *r, int n, float sr) {
     for (int i = 0; i < n; i++) {
         float lvl = fabsf(l[i]) > fabsf(r[i]) ? fabsf(l[i]) : fabsf(r[i]);
         if (lvl < 1e-6f) lvl = 1e-6f;
-        float db = 20.0f * log10f(lvl);
+        /* 20 log10(x) as 6.0206 log2(x), and 10^(x/20) as 2^(0.1661 x):
+         * the base-2 forms are the cheaper libm calls, once per sample. */
+        float db = 6.0205999f * log2f(lvl);
         float c = db > st->cenv ? att : rel;
         st->cenv = db + (st->cenv - db) * c;
         float over = st->cenv - thr;
@@ -763,7 +763,7 @@ static void fx_comp(AminoFxSlot *s, float *l, float *r, int n, float sr) {
         else if (over > -knee * 0.5f && knee > 0.0f)
             gr = slope * (over + knee * 0.5f) * (over + knee * 0.5f) / (2.0f * knee);
         else gr = 0.0f;
-        float g = powf(10.0f, (makeup - gr) / 20.0f);
+        float g = exp2f((makeup - gr) * 0.16609640f);
         l[i] *= g;
         r[i] *= g;
     }
@@ -781,12 +781,22 @@ static void fx_eq(AminoFxSlot *s, float *l, float *r, int n, float sr) {
      * 3 high shelf. The gain bands always run (unity at 0 dB) so crossing
      * 0 dB never hands one band's filter state to another. */
     int use_cut = lowcut > 21.0f;
+    /* The coefficients only move with the knobs: rebuild them (eight biquads,
+     * each a powf and a sin/cos pair) only when a smoothed knob changed. */
+    const float key[6] = { low, mid, midf, high, q, lowcut };
+    int moved = !st->eq_ready;
+    for (int k = 0; k < 6; k++) moved |= key[k] != st->eq_key[k];
     for (int c = 0; c < 2; c++) {
+        if (!use_cut) st->bq[c][0].z1 = st->bq[c][0].z2 = 0.0f;
+        if (!moved) continue;
         if (use_cut) bq_set(&st->bq[c][0], 3, lowcut, 0.0f, 0.707f, sr);
-        else st->bq[c][0].z1 = st->bq[c][0].z2 = 0.0f;
         bq_set(&st->bq[c][1], 1, 120.0f, low, 0.707f, sr);
         bq_set(&st->bq[c][2], 0, midf, mid, q, sr);
         bq_set(&st->bq[c][3], 2, 8000.0f, high, 0.707f, sr);
+    }
+    if (moved) {
+        for (int k = 0; k < 6; k++) st->eq_key[k] = key[k];
+        st->eq_ready = 1;
     }
     for (int c = 0; c < 2; c++) {
         float *buf = c == 0 ? l : r;

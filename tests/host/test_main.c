@@ -395,6 +395,30 @@ int main(void) {
     CHECK(inst != NULL, "create");
     if (!inst) return 1;
 
+    /* State values are formatted by hand (params.c value_str), exactly as
+     * printf's %.3f and %d: ties round to even, and a negative value that
+     * rounds to zero keeps its sign. */
+    {
+        static const struct { const char *key, *in, *out; } fmt[] = {
+            { "l1_pan", "-0.0004", "-0.000" }, { "l1_pan", "0.0625", "0.062" },
+            { "l1_pan", "0.0635", "0.064" },   { "l1_pan", "-1", "-1.000" },
+            { "l1_pan", "0.9995", "0.999" },   { "l1_pan", "0.5", "0.500" },
+            { "l1_osc1_fine", "-37", "-37" },  { "l1_osc1_fine", "0", "0" },
+        };
+        char got[64], want[64];
+        void *fi = api->create_instance("modules/sound_generators/amino", 0);
+        CHECK(fi != NULL, "create a second instance");
+        for (size_t i = 0; fi && i < sizeof fmt / sizeof fmt[0]; i++) {
+            api->set_param(fi, fmt[i].key, fmt[i].in);
+            api->get_param(fi, fmt[i].key, got, sizeof got);
+            if (fmt[i].key[3] == 'p') snprintf(want, sizeof want, "%.3f", (double)strtof(fmt[i].in, 0));
+            else snprintf(want, sizeof want, "%s", fmt[i].out);
+            CHECK(strcmp(got, fmt[i].out) == 0 && strcmp(got, want) == 0, fmt[i].in);
+            if (strcmp(got, fmt[i].out) != 0) printf("  %s: got %s, want %s\n", fmt[i].in, got, fmt[i].out);
+        }
+        if (fi) api->destroy_instance(fi);
+    }
+
     static char buf[131072];
     int n = api->get_param(inst, "chain_params", buf, sizeof buf);
     printf("chain_params: %d bytes\n", n);

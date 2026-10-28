@@ -6,6 +6,7 @@
 #   scripts/build.sh            # tests (if present) + device build + package
 #   scripts/build.sh --gen      # run tools/gen/gen.py first
 #   scripts/build.sh --no-test  # skip native tests
+#   scripts/build.sh --profile  # dsp.so with the cpu_us debug key (not for release)
 #
 # Needs zig (brew install zig) for the cross-compile; native tests use $CC
 # (default cc). Set ZIG=/path/to/zig to override the zig lookup.
@@ -16,11 +17,13 @@ cd "$ROOT"
 
 GEN=0
 TEST=1
+PROFILE=0
 for arg in "$@"; do
   case "$arg" in
     --gen) GEN=1 ;;
     --no-test) TEST=0 ;;
-    -h|--help) sed -n '2,11p' "$0"; exit 0 ;;
+    --profile) PROFILE=1 ;;
+    -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
     *) echo "unknown option: $arg" >&2; exit 2 ;;
   esac
 done
@@ -92,8 +95,11 @@ esac
   src/dsp/*.c tools/emulator/c_host.c -lm
 
 echo "== dsp.so (aarch64-linux-gnu, $("$ZIG" version))"
-# -ffile-prefix-map: no absolute build paths (and so no user name) in shipped binaries
-"$ZIG" cc -target aarch64-linux-gnu.2.28 -std=c11 -O2 -fPIC -shared -ffile-prefix-map="$ROOT"=. -I src/dsp \
+# -ffile-prefix-map: no absolute build paths (and so no user name) in shipped binaries.
+# -s: no debug sections in the package.
+DEFS=""
+[ "$PROFILE" = 1 ] && DEFS="-DAMINO_PROFILE"
+"$ZIG" cc -target aarch64-linux-gnu.2.28 -std=c11 -O2 -fPIC -shared -s $DEFS -ffile-prefix-map="$ROOT"=. -I src/dsp \
   -o "$MODULE/dsp.so" src/dsp/*.c -lm -ldl
 # zig leaves a .so.o next to the output on some versions
 rm -f "$MODULE/dsp.so.o"

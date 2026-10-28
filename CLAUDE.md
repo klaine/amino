@@ -10,6 +10,7 @@ the product and the document map. This file covers working on the code.
 ```sh
 scripts/build.sh              # contract, native, UI and golden tests, then dsp.so + amino-module.tar.gz
 scripts/build.sh --gen        # run tools/gen/gen.py first (after changing params, presets or src/ UI files)
+scripts/build.sh --profile    # dsp.so with the read-only cpu_us key (render time, not for release)
 scripts/build_web.sh          # WebAssembly site in build/site (needs a --gen build first); also updates the local pages branch
 scripts/pages.sh [--push] [--gallery]  # build/amino.html as index.html (+ gallery/) on the `pages` branch
 scripts/deploy.sh [host]      # staged install on a Move; scripts/logs.sh follows the debug log

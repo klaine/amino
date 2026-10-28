@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef AMINO_PROFILE
+#include <time.h>
+#endif
 
 #if defined(__linux__)
 #include "move_info.h"
@@ -280,6 +283,12 @@ static void set_param(void *instance, const char *key, const char *val) {
 static int get_param(void *instance, const char *key, char *buf, int buf_len) {
     AminoInstance *in = (AminoInstance *)instance;
     if (!in) return -1;
+#ifdef AMINO_PROFILE
+    if (key && strcmp(key, "cpu_us") == 0) {
+        int n = snprintf(buf, (size_t)buf_len, "%.1f", (double)in->cpu_us);
+        return n < 0 || n >= buf_len ? -1 : n;
+    }
+#endif
     return amino_param_get(in, key, buf, buf_len);
 }
 
@@ -296,6 +305,10 @@ static void render_chunk(AminoInstance *in, int16_t *out, int frames);
 static void render_block(void *instance, int16_t *out, int frames) {
     AminoInstance *in = (AminoInstance *)instance;
     if (!in || !out || frames <= 0) return;
+#ifdef AMINO_PROFILE
+    struct timespec prof_t0, prof_t1;
+    clock_gettime(CLOCK_MONOTONIC, &prof_t0);
+#endif
 
     /* The set can change while the instrument remains loaded. After the first
      * create-time resolution this is a lock-free seqlock copy from Schwung. */
@@ -332,6 +345,11 @@ static void render_block(void *instance, int16_t *out, int frames) {
         frames -= n;
         if (in->sync_transport) in->sync_beat += (double)n * beats_per_frame;
     }
+#ifdef AMINO_PROFILE
+    clock_gettime(CLOCK_MONOTONIC, &prof_t1);
+    in->cpu_us += 0.05f * ((float)(prof_t1.tv_sec - prof_t0.tv_sec) * 1e6f
+                           + (float)(prof_t1.tv_nsec - prof_t0.tv_nsec) * 1e-3f - in->cpu_us);
+#endif
 }
 
 static void render_chunk(AminoInstance *in, int16_t *out, int frames) {
