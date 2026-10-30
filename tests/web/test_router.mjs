@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { route, defaultAssign, isPassthrough, ENGINE_CHANNEL } from "../../web/router.js";
+import { route, defaultAssign, isPassthrough, trackHeld, heldNoteOffs, ENGINE_CHANNEL } from "../../web/router.js";
 
 const on = (ch, n = 60) => [0x90 | ch, n, 100];
 const off = (ch, n = 60) => [0x80 | ch, n, 0];
@@ -34,4 +34,30 @@ assert.deepEqual(route(a, [0xb0, 123, 0]), [[0xb0 | 0, 123, 0], [0xb0 | 1, 123, 
 // System and malformed messages are dropped.
 assert.deepEqual(route(defaultAssign(), [0xf8, 0, 0]), []);
 assert.deepEqual(route(defaultAssign(), [0x20, 0, 0]), []);
+
+// Held notes: a key stays lit until every input and channel holding it lets go.
+const held = new Map();
+trackHeld(held, "a", on(0));
+trackHeld(held, "b", on(0));
+trackHeld(held, "a", on(1));
+trackHeld(held, "a", off(0));
+trackHeld(held, "b", off(0));
+assert.ok(held.has(60), "still held on channel 2");
+trackHeld(held, "a", [0x91, 60, 0]);
+assert.equal(held.size, 0, "velocity 0 is a note off");
+// A repeated note on needs only one note off; an unmatched note off is ignored.
+trackHeld(held, "a", on(0));
+trackHeld(held, "a", on(0));
+trackHeld(held, "a", off(0));
+trackHeld(held, "a", off(0, 61));
+assert.equal(held.size, 0);
+// All Notes Off only releases that source's channel; other messages change nothing.
+trackHeld(held, "a", on(0, 60));
+trackHeld(held, "a", on(1, 61));
+trackHeld(held, "a", [0xb0, 123, 0]);
+trackHeld(held, "a", [0xb1, 1, 64]);
+assert.deepEqual([...held.keys()], [61]);
+// A note off for each held note, on its own channel; input ids may contain "/".
+trackHeld(held, "a/b", on(9, 70));
+assert.deepEqual(heldNoteOffs(held), [off(1, 61), off(9, 70)]);
 console.log("router tests passed");

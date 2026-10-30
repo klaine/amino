@@ -2,7 +2,7 @@
  * from WebMIDI, the computer keyboard and the on-screen keys. */
 import { Engine } from "./engine.js";
 import { Bridge } from "./bridge.js";
-import { route, defaultAssign, isPassthrough, LAYERS, ENGINE_CHANNEL, LAYER_MODE_CHAN } from "./router.js";
+import { route, defaultAssign, isPassthrough, trackHeld, heldNoteOffs, LAYERS, ENGINE_CHANNEL, LAYER_MODE_CHAN } from "./router.js";
 
 const $ = (id) => document.getElementById(id);
 const BASE = "./";
@@ -31,6 +31,7 @@ function persistRouting() {
 /* ------------------------------------------------------------- MIDI path */
 
 const activity = new Array(16).fill(0);
+const midiHeld = new Map();     // notes held by MIDI inputs, lit on the keyboard
 function send(msg) {
   if (!engine) return;
   if (msg[0] >= 0x80 && msg[0] < 0xf0) activity[msg[0] & 15] = performance.now();
@@ -41,6 +42,7 @@ function send(msg) {
 function allNotesOff() {
   if (!engine) return;
   for (let c = 0; c < 16; c++) engine.midi([0xb0 | c, 123, 0]);
+  clearMidiHeld();
 }
 
 /* ------------------------------------------------------ routing -> engine */
@@ -138,7 +140,12 @@ let midiInputId = "all";
 function onMidiMessage(e) {
   if (midiInputId !== "all" && e.target.id !== midiInputId) return;
   const d = e.data;
-  if (d.length >= 1 && d[0] >= 0x80 && d[0] < 0xf0) send([d[0], d[1] || 0, d[2] || 0]);
+  if (d.length >= 1 && d[0] >= 0x80 && d[0] < 0xf0) {
+    const msg = [d[0], d[1] || 0, d[2] || 0];
+    send(msg);
+    trackHeld(midiHeld, e.target.id, msg);
+    paint();
+  }
 }
 
 function refreshMidiInputs() {
@@ -175,7 +182,10 @@ async function startMidi() {
   }
   try {
     midiAccess = await navigator.requestMIDIAccess({ sysex: false });
-    midiAccess.onstatechange = refreshMidiInputs;
+    midiAccess.onstatechange = (e) => {
+      if (e.port.state === "disconnected") releaseMidiHeld();
+      refreshMidiInputs();
+    };
   } catch (err) {
     midiStatus("MIDI blocked", "MIDI access was denied; allow it in the browser's site settings and reload.");
   }
@@ -192,7 +202,18 @@ const keyEls = [];
 let keysBoard = null;
 const KEYMAP = "awsedftgyhujk";
 function paint() {
-  keyEls.forEach((el) => el.classList.toggle("down", down.has(Number(el.dataset.note))));
+  keyEls.forEach((el) => {
+    const n = Number(el.dataset.note);
+    el.classList.toggle("down", down.has(n) || midiHeld.has(n));
+  });
+}
+
+function clearMidiHeld() { midiHeld.clear(); paint(); }
+
+/** A device went away or its input was deselected: its note offs will never arrive. */
+function releaseMidiHeld() {
+  heldNoteOffs(midiHeld).forEach(send);
+  clearMidiHeld();
 }
 
 function releaseAll() { [...down].forEach(noteOff); }
@@ -365,5 +386,5 @@ $("start").onclick = start;
 document.addEventListener("visibilitychange", () => {
   if (engine && !document.hidden && engine.ctx.state === "suspended") engine.ctx.resume();
 });
-$("midi-in").onchange = () => { midiInputId = $("midi-in").value; };
+$("midi-in").onchange = () => { midiInputId = $("midi-in").value; releaseMidiHeld(); };
 $("octave").onchange = () => { releaseAll(); layoutKeys(keysBoard); };

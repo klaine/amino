@@ -39,3 +39,32 @@ export function route(assign, msg) {
   if (perLayer) return hit.map((i) => [type | (ENGINE_CHANNEL(i) - 1), msg[1], msg[2]]);
   return [[type, msg[1], msg[2]]];
 }
+
+/**
+ * Keep `held` (note -> set of sources) up to date with one incoming message.
+ * `source` names the input; the channel is added here, so a note held on two
+ * inputs or channels stays held until both let go.  Velocity 0 is a note off,
+ * and All Notes/Sound Off releases everything that source held on its channel.
+ */
+export function trackHeld(held, source, msg) {
+  const type = msg[0] & 0xf0;
+  const from = source + "/" + (msg[0] & 0x0f);
+  const release = (n, sources) => { sources.delete(from); if (!sources.size) held.delete(n); };
+  if (type === 0x90 && msg[2] > 0) {
+    if (!held.has(msg[1])) held.set(msg[1], new Set());
+    held.get(msg[1]).add(from);
+  } else if (type === 0x80 || type === 0x90) {
+    if (held.has(msg[1])) release(msg[1], held.get(msg[1]));
+  } else if (type === 0xb0 && (msg[1] === 120 || msg[1] === 123)) {
+    for (const [n, sources] of held) release(n, sources);
+  }
+}
+
+/** Note offs for everything in `held`, for when the real ones will never arrive. */
+export function heldNoteOffs(held) {
+  const offs = [];
+  for (const [n, sources] of held) {
+    for (const from of sources) offs.push([0x80 | Number(from.slice(from.lastIndexOf("/") + 1)), n, 0]);
+  }
+  return offs;
+}
