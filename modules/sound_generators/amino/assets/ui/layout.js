@@ -69,7 +69,7 @@ function group(title, ...rows) {
 
 function presetNav(store) {
   const count = store.meta.presetCount || 0;
-  // Names and banks arrive with the lazily loaded library; stepping only
+  // Names arrive with the lazily loaded library; stepping only
   // needs the count, so it works before then.
   let presets = [];
   loadLibraryWhenIdle().then((lib) => {
@@ -121,7 +121,7 @@ function presetNav(store) {
     const edited = i >= 0 && reported() < 0;
     nameText.textContent = store.get("preset_name") || (p && p.name) || "Init";
     nameMeta.textContent = i >= 0
-      ? String(i).padStart(3, "0") + (p ? " · " + p.bank : "") + (edited ? " · edited" : "")
+      ? String(i).padStart(3, "0") + (edited ? " · edited" : "")
       : "—";
     prev.disabled = i <= 0;
     next.disabled = i >= count - 1;

@@ -1,5 +1,7 @@
 # 10 — Factory Presets: Modern Bank (64–127)
 
+> Authoring source: the numbers below are doc numbers (`doc_no`), not positions in the shipped factory bank, which is one bank sorted by category ([06](06-presets-and-state.md)).
+
 The bank in [09](09-factory-presets.md) is the **Nostalgia** bank (0–63):
 envelope-swept tables, aliasing, dirt, the 1980s digital palette. This **Modern**
 bank (64–127) uses the same engine and categories for current production styles.

@@ -828,11 +828,11 @@ def emit_presets():
         c.append("};")
     c.append("const AminoFactoryPreset amino_factory_presets[] = {")
     for i, (j, vals) in enumerate(presets):
-        c.append('    { %s, %s, %s, %s, %sf, %d, preset_values_%d },'
+        c.append('    { %s, %s, %s, %sf, %d, %d, preset_values_%d },'
                  % (cstr(j.get("name", "Preset %d" % i)),
-                    cstr(j.get("bank", "")), cstr(j.get("category", "")),
+                    cstr(j.get("category", "")),
                     cstr(j.get("description", "")),
-                    ("%.2f" % float(j.get("bpm", 120))), len(vals), i))
+                    ("%.2f" % float(j.get("bpm", 120))), int(j["doc_no"]) + 1, len(vals), i))
     c.append("};")
     c.append("const int amino_factory_preset_count = %d;" % len(presets))
     layer_c, rows = emit_layer_sources(presets)
@@ -847,8 +847,8 @@ def emit_presets():
     h.append("#define AMINO_FACTORY_PRESETS_H")
     h.append("#include <stdint.h>")
     h.append("typedef struct { uint16_t param; float value; } AminoPresetValue;")
-    h.append("typedef struct { const char *name; const char *bank; const char *category;")
-    h.append("                 const char *description; float bpm;")
+    h.append("typedef struct { const char *name; const char *category;")
+    h.append("                 const char *description; float bpm; uint16_t seed;")
     h.append("                 uint16_t value_count; const AminoPresetValue *values; } AminoFactoryPreset;")
     h.append("typedef struct { uint16_t preset; uint8_t layer; const char *label; } AminoLayerSource;")
     h.append("extern const AminoFactoryPreset amino_factory_presets[];")
@@ -913,15 +913,14 @@ def emit_wavetables():
 
 
 def preset_index():
-    """Factory presets in bank order plus their Load Layer source labels."""
+    """Factory presets in order plus their Load Layer source labels."""
     rows = []
     layers = []
     for i, p in enumerate(factory_files()):
         with open(p, "r", encoding="utf-8") as f:
             j = json.load(f)
         name = j.get("name", "Preset %d" % i)
-        rows.append({"name": name, "category": j.get("category", ""),
-                     "bank": j.get("bank", "")})
+        rows.append({"name": name, "category": j.get("category", "")})
         params = j.get("params", {})
         used = set(range(1, int(params.get("layer_count", 1)) + 1))
         for key in params:

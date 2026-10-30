@@ -1,5 +1,7 @@
 # 17 — Expansion Bank II (260–323) and Wavetables 58–73
 
+> Authoring source: the numbers below are doc numbers (`doc_no`), not positions in the shipped factory bank, which is one bank sorted by category ([06](06-presets-and-state.md)).
+
 64 presets that show off the sixteen v0.5 wavetables
 ([07](07-wavetables-and-ip.md) §3.5). Same notation and voicing rules as
 [09](09-factory-presets.md) §2 and [10](10-factory-presets-modern.md) §2. Every

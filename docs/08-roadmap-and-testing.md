@@ -180,7 +180,7 @@ Decided (2026-10-21):
 - Voices: 8 default, up to 16 if CPU allows (03 §14.1).
 - Arpeggiator: not built in.
 - Licence: MIT (`LICENSE` at repo root; generated tables and presets are MIT too).
-- Factory presets: 324 — Nostalgia [09](09-factory-presets.md), Modern [10](10-factory-presets-modern.md), genre banks [13](13-genre-banks.md), Expansion [14](14-expansion-bank.md), Trance Gate Showcase [16](16-trance-gate-presets.md), Expansion II [17](17-expansion-bank-2.md).
+- Factory presets: 324, one bank sorted by category ([06](06-presets-and-state.md)); authored as Nostalgia [09](09-factory-presets.md), Modern [10](10-factory-presets-modern.md), genre banks [13](13-genre-banks.md), Expansion [14](14-expansion-bank.md), Trance Gate Showcase [16](16-trance-gate-presets.md), Expansion II [17](17-expansion-bank-2.md).
 - Effects: Protein's 9 types + Amino extensions, [11](11-effects.md).
 - Remote UI: required for v0.3.
 

@@ -3,8 +3,8 @@
 #define AMINO_FACTORY_PRESETS_H
 #include <stdint.h>
 typedef struct { uint16_t param; float value; } AminoPresetValue;
-typedef struct { const char *name; const char *bank; const char *category;
-                 const char *description; float bpm;
+typedef struct { const char *name; const char *category;
+                 const char *description; float bpm; uint16_t seed;
                  uint16_t value_count; const AminoPresetValue *values; } AminoFactoryPreset;
 typedef struct { uint16_t preset; uint8_t layer; const char *label; } AminoLayerSource;
 extern const AminoFactoryPreset amino_factory_presets[];

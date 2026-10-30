@@ -1,5 +1,7 @@
 # 13 — Genre Banks (128–223)
 
+> Authoring source: the numbers below are doc numbers (`doc_no`), not positions in the shipped factory bank, which is one bank sorted by category ([06](06-presets-and-state.md)).
+
 Four additional factory banks, 24 presets each, in the same notation and
 voicing rules as [09](09-factory-presets.md) §2 and [10](10-factory-presets-modern.md) §2.
 Every bank has six roles × 4 presets:

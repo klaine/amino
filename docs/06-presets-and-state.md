@@ -74,17 +74,23 @@ All voices are released with a 5 ms fade before applying a state load.
   `tools/emulator/extract_presets.py` (multi-layer presets from
   `tools/emulator/ml_presets.py`). Once sound design moves to the JSON files, they
   become the source of truth and the docs tables are regenerated from them.
-- Banks: **Nostalgia** 0–63 ([09](09-factory-presets.md)), **Modern** 64–127
-  ([10](10-factory-presets-modern.md)), and the genre banks **2000s Trance**
-  128–151, **Tech House** 152–175, **Deep House** 176–199, **Minimal Techno**
-  200–223 ([13](13-genre-banks.md)), **Expansion** 224–255
-  ([14](14-expansion-bank.md)), **Trance Gate Showcase** 256–259
-  ([16](16-trance-gate-presets.md)), and **Expansion II** 260–323
-  ([17](17-expansion-bank-2.md)). Factory presets do not store `scale`, except
-  257 and 259, which shipped with `Scale Set`. Each preset file carries `bank`, `category`
-  and the bank's design `bpm`; the Remote UI filters by bank and category, the
-  hardware browser lists in index order.
-- Preset 0 is always **Init** (1 layer, Saw table, filter open, no FX); preset 64
+- One **factory bank**, sorted by category: Init 0–1, Bass 2–53, Lead 54–105,
+  Pad 106–156, Keys 157–199, Pluck 200–247, Effect 248–286, Drone 287–305,
+  Multi-layer 306–323. `extract_presets.py` sets the order; within a category,
+  presets keep their doc order.
+- The tables in docs [09](09-factory-presets.md), [10](10-factory-presets-modern.md),
+  [13](13-genre-banks.md), [14](14-expansion-bank.md),
+  [16](16-trance-gate-presets.md) and [17](17-expansion-bank-2.md) are the
+  authoring source, grouped into the sets they were designed as. Their numbers
+  are **doc numbers**, stored as `doc_no` in each preset file. A preset's `index`
+  is its place in the bank. `doc_no` also seeds the preset's random streams, so
+  moving a preset does not change its sound.
+- Factory presets do not store `scale`, except LD Rolling Gate Lead and PL Broken
+  Gate Arp, which shipped with `Scale Set`. Each preset file carries `category`
+  and a design `bpm`; the Remote UI filters by category, the hardware browser
+  lists in index order. Saved state holds parameter values and the patch name,
+  not an index, so reordering leaves saved patches alone.
+- Preset 0 is always **Init** (1 layer, Saw table, filter open, no FX); preset 1
   is **Init Modern**.
 
 ### Factory content plan

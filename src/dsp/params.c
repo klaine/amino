@@ -272,8 +272,7 @@ void amino_apply_preset(AminoInstance *in, int index) {
     if (index < 0 || index >= amino_factory_preset_count) return;
     amino_kill_all(in, 1);
     amino_params_reset(in);
-    in->seed = (uint32_t)index + 1u;
-    if (!in->seed) in->seed = 1u;
+    in->seed = amino_factory_presets[index].seed;
     in->rng = in->seed;
     in->counter = 0;
     in->rr = 0;

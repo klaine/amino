@@ -172,7 +172,7 @@ touched or turned. The card is hidden otherwise and degrades to the normal knob
 on hosts without card support. The Remote UI now uses `knobs` as the control
 order (with `params` only for page-local metadata), groups Sound pages into
 collapsed sections, updates waveform canvases while their tab is open, and adds
-bank/category filters plus a searchable Load Layer source list. Its float writes
+category filters plus a searchable Load Layer source list. Its float writes
 are normalized to three decimal places as required by docs/05 §9.2.
 
 Remaining host/UX gaps are explicit:
@@ -247,7 +247,7 @@ hardware's 8-knob pages. (The earlier single-file page was retired on
     rate only: the Remote UI does not receive the host tempo.
 - Phase 4, all loaded on first use (dynamic `import()`, styles in
   `lazy.css`):
-  - `presets.js`: preset browser drawer — search, bank/type chips,
+  - `presets.js`: preset browser drawer — search, type chips,
     favourites (localStorage, by name), arrow keys audition, Enter keeps;
     a Load layer tab loads any factory layer into the focused layer.
   - `history.js` (after first paint): undo/redo of every edit made in the

@@ -1,5 +1,7 @@
 # 09 — Factory Presets: Nostalgia Bank (0–63)
 
+> Authoring source: the numbers below are doc numbers (`doc_no`), not positions in the shipped factory bank, which is one bank sorted by category ([06](06-presets-and-state.md)).
+
 The Modern bank (64–127) is in [10](10-factory-presets-modern.md).
 
 ## 1. Sources & approach

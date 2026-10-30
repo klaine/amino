@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Extract factory presets from docs/09, 10, 13, 14, 16 and 17 into presets/factory/*.json.
 
-Each JSON file stores only values that differ from Init (docs/06 §3), using the
+The docs number presets in authoring order; the factory bank ships sorted by
+category.  Each file's `index` is its place in the bank, `doc_no` its row in
+the docs.  Each JSON file stores only values that differ from Init (docs/06 §3), using the
 flat state-blob keys of docs/04 (globals bare, layer keys as l{n}_<key>).
 """
 import json
@@ -30,7 +32,9 @@ ROW = re.compile(r"^\|\s*(\d+)\s*\|\s*((?:IN|BS|LD|PD|KY|PL|FX|DR|ML) [^|]+?)\s*
 
 PHRASES = {"IN": "init", "BS": "bass", "LD": "lead", "PD": "pad", "KY": "keys",
            "PL": "pluck", "FX": "fx", "DR": "drone", "ML": "keys"}
-# Presets that shipped with a stored Scale Set; every other preset leaves scale to the user.
+# Bank order; within a category, presets keep their doc order.
+CATEGORY_ORDER = ("IN", "BS", "LD", "PD", "KY", "PL", "FX", "DR", "ML")
+# Doc numbers of the presets that shipped with a stored Scale Set; every other preset leaves scale to the user.
 KEEPS_SCALE = {257, 259}
 GENRE_ROLE = {"BS": "bass", "LD": "lead", "KY": "keys", "PD": "pad", "PL": "pluck", "FX": "fx"}
 
@@ -195,15 +199,17 @@ def main():
     for old in OUT.glob("*.json"):
         old.unlink()
     trims = load_trims()
-    for i in range(PRESET_COUNT):
-        p = presets[i]
+    order = sorted(presets, key=lambda n: (CATEGORY_ORDER.index(presets[n]["category"]), n))
+    for i, doc_no in enumerate(order):
+        p = presets[doc_no]
+        p["index"] = i      # level trims are keyed by place in the bank
         auto_route(p)
         add_expression(p)
         apply_level(p, trims)
-        doc = {"fmt": "amino-preset", "v": 1, "index": i, "name": p["name"], "bank": p["bank"],
+        doc = {"fmt": "amino-preset", "v": 1, "index": i, "doc_no": doc_no, "name": p["name"],
                "category": p["category"], "description": p["description"], "phrase": p["phrase"],
                "bpm": p.get("bpm", 120), "flags": p["flags"],
-               "fx_notes": p["fx_notes"], "params": to_flat(p["globals"], p["layers"], i in KEEPS_SCALE)}
+               "fx_notes": p["fx_notes"], "params": to_flat(p["globals"], p["layers"], doc_no in KEEPS_SCALE)}
         (OUT / f"{i:03d}_{slug(p['name'])}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n")
     print(f"wrote {PRESET_COUNT} presets to {OUT}")
 

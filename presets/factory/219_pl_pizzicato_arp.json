@@ -1,0 +1,40 @@
+{
+  "fmt": "amino-preset",
+  "v": 1,
+  "index": 219,
+  "doc_no": 147,
+  "name": "PL Pizzicato Arp",
+  "category": "PL",
+  "description": "Plucked string arp",
+  "phrase": "trance_pluck",
+  "bpm": 138,
+  "flags": [
+    "ARP"
+  ],
+  "fx_notes": "FX2 Reverb .35 (Size .7)",
+  "params": {
+    "fx2_type": "Reverb",
+    "fx2_mix": 0.35,
+    "patch_gain": 7.7,
+    "fx2_p1": 0.7,
+    "fx2_p2": 0.5485,
+    "fx2_p3": 0.5,
+    "fx2_p4": 0.1,
+    "fx2_p5": 0.3,
+    "fx2_p6": 1.0,
+    "l1_route": "FX2",
+    "l1_osc_mode": "Clean",
+    "l1_ftype": "HP12",
+    "l1_cutoff": 40.0,
+    "l1_e3_d": 0.2,
+    "l1_e3_s": 0.0,
+    "l1_e3_r": 0.2,
+    "l1_at_wave": 0.1,
+    "l1_osc1_table": "Violin",
+    "l1_osc1_wave": 40,
+    "l1_osc1_vel": 0.2,
+    "l1_m1_src": "ModWheel",
+    "l1_m1_dst": "E3 Decay",
+    "l1_m1_amt": 0.25
+  }
+}

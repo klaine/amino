@@ -78,8 +78,9 @@ static void *amino_create(const char *module_dir, const char *json_defaults) {
     in->rui_bpm = in->bpm;
     for (int i = 0; i < AMINO_AUDITION_NOTES; i++) in->aud_note[i] = -1;
     in->sm_master = -1.0f;
-    /* Preset zero is the initial patch. Preset loads reseed from index + 1 so
-     * random streams are repeatable per (preset, voice) on every slot. */
+    /* Preset zero is the initial patch. Preset loads reseed from the preset's
+     * own seed, so random streams are repeatable per (preset, voice) on every
+     * slot and do not change when the bank is reordered. */
     in->seed = 1u;
     in->rng = in->seed;
     in->last_rr = (uint32_t)-1;

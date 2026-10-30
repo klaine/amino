@@ -39,7 +39,7 @@ set("l1_ftype", "2");
 set("l1_e4_d", "0.7");
 const state = get("state");
 assert.ok(state.includes("l1_e4_d"), "state carries the aux envelope");
-set("preset", "5");
+set("preset", "6");
 set("state", state);
 assert.equal(get("l1_ftype"), "2");
 assert.ok(JSON.parse(get("state")).l1_e4_d !== undefined);

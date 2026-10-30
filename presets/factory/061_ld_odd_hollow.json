@@ -1,0 +1,32 @@
+{
+  "fmt": "amino-preset",
+  "v": 1,
+  "index": 61,
+  "doc_no": 17,
+  "name": "LD Odd Hollow",
+  "category": "LD",
+  "description": "Clarinet-ish odd harmonics",
+  "phrase": "lead",
+  "bpm": 120,
+  "flags": [],
+  "fx_notes": "",
+  "params": {
+    "patch_gain": 2.1,
+    "l1_poly": "Mono",
+    "l1_glide": 0.1,
+    "l1_cutoff": 85.0,
+    "l1_res": 0.3,
+    "l1_at_cut": 0.2,
+    "l1_lfo2_pitch": 0.025,
+    "l1_osc1_table": "Odd",
+    "l1_osc1_wave": 15,
+    "l1_lfo1_rate": 0.5,
+    "l1_lfo2_shape": "Sine",
+    "l1_lfo2_rate": 0.74,
+    "l1_lfo2_fade": 0.25,
+    "l1_lfo2_mw": "On",
+    "l1_m1_src": "LFO1",
+    "l1_m1_dst": "Osc1 Wave",
+    "l1_m1_amt": 0.2
+  }
+}

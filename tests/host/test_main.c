@@ -182,12 +182,12 @@ static void regression_tests(plugin_api_v2_t *api) {
     {
         void *in = api->create_instance("", 0);
         char got[16];
-        api->set_param(in, "preset", "5");
+        api->set_param(in, "preset", "6");
         api->set_param(in, "edit_layer", "1");
         api->get_param(in, "l1_cutoff", got, sizeof got);
         api->set_param(in, "l1_cutoff", got);
         api->get_param(in, "preset", got, sizeof got);
-        CHECK(strcmp(got, "5") == 0, "focus change and no-op write keep the preset");
+        CHECK(strcmp(got, "6") == 0, "focus change and no-op write keep the preset");
         api->set_param(in, "l1_cutoff", "12");
         api->get_param(in, "preset", got, sizeof got);
         CHECK(strcmp(got, "-1") == 0, "a real edit detaches the preset");
@@ -281,7 +281,7 @@ static void bank_polish_tests(plugin_api_v2_t *api) {
      * about -0.29 full-scale DC. */
     {
         void *in = api->create_instance("", 0);
-        api->set_param(in, "preset", "53");
+        api->set_param(in, "preset", "290");
         api->set_param(in, "fx2_type", "Off");
         api->on_midi(in, (const uint8_t[]){ 0x90, 48, 100 }, 3, 0);
         render_rms(api, in, 100, 0, 0);
@@ -545,8 +545,8 @@ int main(void) {
     void *rng_b = api->create_instance("", 0);
     CHECK(rng_a != NULL && rng_b != NULL, "random parity instances");
     if (rng_a && rng_b) {
-        api->set_param(rng_a, "preset", "79");
-        api->set_param(rng_b, "preset", "79");
+        api->set_param(rng_a, "preset", "68");
+        api->set_param(rng_b, "preset", "68");
         static const uint8_t rng_notes[] = { 48, 55, 60 };
         for (int i = 0; i < 3; i++) {
             api->on_midi(rng_a, (const uint8_t[]){ 0x90, rng_notes[i], 110 }, 3, 0);
@@ -571,7 +571,7 @@ int main(void) {
     void *mono_phase_inst = api->create_instance("", 0);
     CHECK(mono_phase_inst != NULL, "mono phase instance");
     if (mono_phase_inst) {
-        api->set_param(mono_phase_inst, "preset", "205");
+        api->set_param(mono_phase_inst, "preset", "85");
         api->on_midi(mono_phase_inst, (const uint8_t[]){ 0x90, 48, 100 }, 3, 0);
         render_rms(api, mono_phase_inst, 1, 0, 0);
         AminoVoice *mv = &((AminoInstance *)mono_phase_inst)->v[0];
@@ -589,7 +589,7 @@ int main(void) {
     /* Init should be a clean, normalized saw rather than hard-clipped table
      * bytes. This catches accidental loss of the signed-8-bit /128 scaling. */
     for (int p = 0; p < 3; p++) {
-        static const int parallel_presets[] = { 56, 57, 122 };
+        static const int parallel_presets[] = { 307, 308, 318 };
         char preset_num[8];
         snprintf(preset_num, sizeof preset_num, "%d", parallel_presets[p]);
         api->set_param(inst, "preset", preset_num);
@@ -630,17 +630,17 @@ int main(void) {
     api->set_param(inst, "fx1_type", "Off");
 
     /* Preset render. */
-    api->set_param(inst, "preset", "1");
+    api->set_param(inst, "preset", "2");
     n = api->get_param(inst, "preset_name", buf, sizeof buf);
-    printf("preset 1 name: %s\n", buf);
+    printf("preset 2 name: %s\n", buf);
     api->on_midi(inst, (const uint8_t[]){ 0x90, 60, 100 }, 3, 0);
     api->on_midi(inst, (const uint8_t[]){ 0x90, 64, 100 }, 3, 0);
     api->on_midi(inst, (const uint8_t[]){ 0x90, 67, 100 }, 3, 0);
     int peak = 0;
     double rms = render_rms(api, inst, 40, 0, &peak);
     printf("preset1 rms %.1f peak %d\n", rms, peak);
-    CHECK(rms > 100.0, "preset 1 audible");
-    CHECK(peak < 32767, "preset 1 not clipped hard");
+    CHECK(rms > 100.0, "preset 2 audible");
+    CHECK(peak < 32767, "preset 2 not clipped hard");
     api->on_midi(inst, (const uint8_t[]){ 0xB0, 123, 0 }, 3, 0);
     render_rms(api, inst, 10, 0, 0);
 
@@ -868,7 +868,7 @@ int main(void) {
     g_beats = 0.0;
 
     /* State round-trip on a richer preset. */
-    api->set_param(inst, "preset", "100");
+    api->set_param(inst, "preset", "208");
     api->get_param(inst, "l1_scale", buf, sizeof buf);
     CHECK(strcmp(buf, "0") == 0,
           "factory preset leaves scale at the user's default instead of forcing Set");
@@ -913,7 +913,7 @@ int main(void) {
     CHECK(bad == 0, "all presets finite");
 
     /* FX type sweep, including both chains. */
-    api->set_param(inst, "preset", "1");
+    api->set_param(inst, "preset", "2");
     api->set_param(inst, "fx1_mix", "0.6");
     api->set_param(inst, "fx2_mix", "0.6");
     api->set_param(inst, "l1_route", "FX1");
@@ -979,7 +979,7 @@ int main(void) {
     api->set_param(inst, "edit_layer", "9");
     n = api->get_param(inst, "edit_layer", buf, sizeof buf);
     CHECK(strcmp(buf, "2") == 0, "edit layer clamped to count");
-    api->set_param(inst, "preset", "55");
+    api->set_param(inst, "preset", "306");
     api->set_param(inst, "layer_count", "4");
     api->set_param(inst, "layer_mode", "Stack");
     for (int li = 1; li <= 4; li++) {
@@ -1011,7 +1011,7 @@ int main(void) {
      * fade. That queued note must be cancelled, not left sustaining forever. */
     void *mono_inst = api->create_instance("", 0);
     CHECK(mono_inst != NULL, "mono regression instance");
-    api->set_param(mono_inst, "preset", "6");
+    api->set_param(mono_inst, "preset", "7");
     api->set_param(mono_inst, "l1_e1_d", "0");
     api->set_param(mono_inst, "l1_e1_s", "1");
     api->set_param(mono_inst, "l1_e1_r", "0");
@@ -1197,7 +1197,7 @@ int main(void) {
         AminoInstance *ai = (AminoInstance *)alloc_inst;
         api->on_midi(alloc_inst, (const uint8_t[]){ 0x90, 60, 100 }, 3, 0);
         CHECK(ai->alloc_cursor == 1, "note allocation advances voice cursor");
-        api->set_param(alloc_inst, "preset", "79");
+        api->set_param(alloc_inst, "preset", "68");
         CHECK(ai->alloc_cursor == 0, "preset load resets voice allocation cursor");
         api->destroy_instance(alloc_inst);
     }

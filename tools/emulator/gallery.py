@@ -93,7 +93,7 @@ def main(fx=True, site=None, kbps=96):
                              "file": f"{d.name}/{wav.name}", "peaks": a_peaks,
                              "peak": a_peak, "rms": a_rms, "secs": a_secs})
         items.append({
-            "i": doc["index"], "name": doc["name"], "bank": doc["bank"], "cat": doc["category"],
+            "i": doc["index"], "name": doc["name"], "cat": doc["category"],
             "desc": doc.get("description", ""), "phrase": doc["phrase"], "flags": doc["flags"],
             "bpm": doc.get("bpm", 120),
             "fx": doc["fx_notes"], "file": file, "peaks": peaks, "peak": peak, "rms": rms,
@@ -136,8 +136,6 @@ main { padding:16px 20px 80px; display:grid; gap:10px;
 .card.playing { border-color:var(--acc); box-shadow:0 0 0 1px var(--acc) inset; }
 .top { display:flex; justify-content:space-between; gap:8px; align-items:baseline; }
 .name { font-weight:600; } .idx { color:var(--dim); font-variant-numeric:tabular-nums; margin-right:6px; }
-.badge { font-size:11px; color:var(--dim); border:1px solid var(--line); border-radius:4px; padding:0 5px; }
-.badge.Modern { color:var(--acc2); }
 .desc { color:var(--dim); margin:2px 0 6px; font-size:13px; }
 canvas { width:100%; height:44px; display:block; border-radius:4px; background:#14171c; }
 .meta { display:flex; justify-content:space-between; color:var(--dim); font-size:11px; margin-top:4px;
@@ -160,7 +158,7 @@ footer b { color:var(--fg); }
   <h1>Amino preset previews <span>__MODE__</span><span>__BACKLINK__</span></h1>
   <div class="controls">
     <input type="search" id="q" placeholder="Search name, description, wavetable…">
-    <span id="banks"></span><span id="cats"></span>
+    <span id="cats"></span>
     <label class="opt"><input type="checkbox" id="auto"> auto-advance</label>
     <label class="opt"><input type="checkbox" id="norm"> loudness-match</label>
     <label class="opt" id="abopt"><input type="checkbox" id="abonly"> A/B only</label>
@@ -172,8 +170,7 @@ footer b { color:var(--fg); }
 <script>
 const DATA = /*DATA*/[];
 const CATS = {IN:"Init",BS:"Bass",LD:"Lead",PD:"Pad",KY:"Keys",PL:"Pluck",FX:"Effects",DR:"Drones",ML:"Multi-layer"};
-const BANKS = [...new Set(DATA.map(d => d.bank))];
-const state = { bank:new Set(BANKS), cat:new Set(Object.keys(CATS)), q:"", current:-1, side:0, abOnly:false };
+const state = { cat:new Set(Object.keys(CATS)), q:"", current:-1, side:0, abOnly:false };
 const grid = document.getElementById("grid"), player = document.getElementById("player");
 const now = document.getElementById("now");
 let visible = [];
@@ -189,7 +186,6 @@ function chips(el, values, set, label) {
     el.appendChild(b);
   }
 }
-chips(document.getElementById("banks"), BANKS, state.bank);
 chips(document.getElementById("cats"), Object.keys(CATS), state.cat, k => CATS[k]);
 
 function draw(canvas, d, progress) {
@@ -209,8 +205,7 @@ function card(d, pos) {
   el.className = "card"; el.tabIndex = 0; el.dataset.pos = pos;
   const warn = d.peak < -30 ? " warn" : (d.peak > -0.5 ? " warn" : "");
   el.innerHTML = `
-    <div class="top"><div><span class="idx">${String(d.i).padStart(3,"0")}</span><span class="name"></span></div>
-      <span class="badge ${d.bank === 'Nostalgia' ? '' : 'Modern'}">${d.bank}</span></div>
+    <div class="top"><div><span class="idx">${String(d.i).padStart(3,"0")}</span><span class="name"></span></div></div>
     <div class="desc"></div>
     ${d.alts.length ? `<div class="ab"><button class="on">A · now</button>${d.alts.map((a, k) =>
       `<button>${String.fromCharCode(66 + k)} · ${a.label}</button>`).join("")}<span class="hint"></span></div>` : ""}
@@ -243,7 +238,7 @@ function card(d, pos) {
 
 function render() {
   const q = state.q.toLowerCase();
-  visible = DATA.filter(d => state.bank.has(d.bank) && state.cat.has(d.cat) &&
+  visible = DATA.filter(d => state.cat.has(d.cat) &&
     (!state.abOnly || d.alts.length) &&
     (!q || (d.name + " " + d.desc + " " + d.summary.join(" ")).toLowerCase().includes(q)));
   grid.replaceChildren(...visible.map(card));

@@ -100,7 +100,7 @@ as preset or engine bugs to investigate.
 
 For each preset JSON, `render.py`:
 
-1. creates an engine instance at the preset's bank tempo (`bpm` in the JSON; 120
+1. creates an engine instance at the preset's design tempo (`bpm` in the JSON; 120
    for Nostalgia/Modern/Expansion, genre tempos for docs/13);
 2. loads the **compiled** factory preset with `set_param("preset", index)`
    (identical to the JSON: `gen.py` builds `factory_presets.c` from it);
@@ -112,8 +112,8 @@ For each preset JSON, `render.py`:
 5. keeps rendering after the phrase until the output stays below ≈ −72 dBFS for
    0.3 s, at most 6 s.
 
-Phrases: category phrases for 0–127, 224–255 and 260–323, `trance` role phrases for
-256–259, and genre sequences `<genre>_<role>` for 128–223 (`phrase()`,
+Phrases, by doc number (`doc_no`): category phrases for 0–127, 224–255 and 260–323,
+`trance` role phrases for 256–259, and genre sequences `<genre>_<role>` for 128–223 (`phrase()`,
 `genre_phrase()`). Chord presets play one key per step; the engine adds the
 chord tones.
 

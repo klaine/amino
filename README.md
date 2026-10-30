@@ -32,12 +32,12 @@ and the whole synth is reachable in at most two jog steps from anywhere.
 | 06 | [Presets & state](docs/06-presets-and-state.md) | State blob, factory bank, layer copy/load |
 | 07 | [Wavetables & IP](docs/07-wavetables-and-ip.md) | Wavetable format, content strategy, legal guard-rails |
 | 08 | [Implementation roadmap & test plan](docs/08-roadmap-and-testing.md) | Milestones, repo layout, verification, risks, decisions |
-| 09 | [Factory presets — Nostalgia bank](docs/09-factory-presets.md) | Presets 0–63, Microwave-era archetypes |
-| 10 | [Factory presets — Modern bank](docs/10-factory-presets-modern.md) | Presets 64–127, current production styles |
+| 09 | [Factory presets — Nostalgia set](docs/09-factory-presets.md) | Authoring source, doc numbers 0–63, Microwave-era archetypes |
+| 10 | [Factory presets — Modern set](docs/10-factory-presets-modern.md) | Authoring source, doc numbers 64–127, current production styles |
 | 11 | [Effects](docs/11-effects.md) | The 9 effect types, routing, parameters, CPU/memory |
 | 12 | [Preview rendering & Python tools](docs/12-emulator-guide-for-agents.md) | The C engine as source of truth, rendering the preset gallery with it, and what the (frozen) Python emulator is still for |
-| 13 | [Genre banks](docs/13-genre-banks.md) | 2000s Trance, Tech House, Deep House, Minimal Techno — 24 presets each + preview sequences |
-| 14 | [Expansion bank](docs/14-expansion-bank.md) | Wavetables 48–57 rationale + presets 224–255 that use them |
+| 13 | [Genre sets](docs/13-genre-banks.md) | Authoring source: 2000s Trance, Tech House, Deep House, Minimal Techno — 24 presets each + preview sequences |
+| 14 | [Expansion set](docs/14-expansion-bank.md) | Wavetables 48–57 rationale + the presets that use them (doc numbers 224–255) |
 | 16 | [Trance Gate showcase](docs/16-trance-gate-presets.md) | Four new presets demonstrating gate patterns with compression, delay and reverb |
 
 ## Decisions (2026-10-21)
@@ -48,7 +48,7 @@ and the whole synth is reachable in at most two jog steps from anywhere.
 | Polyphony | 8 by default, up to 16 when CPU allows |
 | Arpeggiator | Not built in; users pair Amino with Schwung's `arp` MIDI FX or Move's sequencer |
 | Licence | MIT |
-| Factory presets | 324 original: Nostalgia (0–63), Modern (64–127), 2000s Trance (128–151), Tech House (152–175), Deep House (176–199), Minimal Techno (200–223), Expansion (224–255), Trance Gate Showcase (256–259), Expansion II (260–323) |
+| Factory presets | 324 original, in one factory bank sorted by category: Init, Bass, Lead, Pad, Keys, Pluck, Effect, Drone, Multi-layer ([06](docs/06-presets-and-state.md)) |
 | Effects | Protein's 9 types + Shimmer + Trance Gate in 2 slots, serial chain, Crush, Pump, Freeze ([11](docs/11-effects.md)) |
 | Remote UI | Required for v0.3 |
 | Wavetables | 74 generated: 52 procedural (MIT, incl. expansion tables 48–57 and 58–67) + 22 from AKWF-FREE (CC0, incl. 68–73); generator in `tools/wavegen/` |

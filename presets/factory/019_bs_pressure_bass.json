@@ -1,0 +1,39 @@
+{
+  "fmt": "amino-preset",
+  "v": 1,
+  "index": 19,
+  "doc_no": 73,
+  "name": "BS Pressure Bass",
+  "category": "BS",
+  "description": "Press to open and morph",
+  "phrase": "bass",
+  "bpm": 120,
+  "flags": [
+    "MPE-ready"
+  ],
+  "fx_notes": "FX1 Comp .7",
+  "params": {
+    "flavour": 0.0,
+    "fx1_type": "Comp",
+    "fx1_mix": 0.7,
+    "patch_gain": 1.3,
+    "fx1_p1": 0.55,
+    "fx1_p2": 0.4628,
+    "fx1_p3": 0.6667,
+    "fx1_p4": 0.588,
+    "fx1_p5": 0.25,
+    "fx1_p6": 0.5,
+    "l1_poly": "Mono",
+    "l1_osc_mode": "Clean",
+    "l1_cutoff": 55.0,
+    "l1_res": 0.3,
+    "l1_e3_r": 0.2,
+    "l1_at_wave": 0.6,
+    "l1_at_cut": 0.4,
+    "l1_osc1_table": "Bass Spectra",
+    "l1_osc1_wave": 10,
+    "l1_m1_src": "ModWheel",
+    "l1_m1_dst": "Cutoff",
+    "l1_m1_amt": 0.2
+  }
+}

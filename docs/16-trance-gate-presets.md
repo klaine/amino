@@ -1,5 +1,7 @@
 # 16 — Trance Gate Showcase (256–259)
 
+> Authoring source: the numbers below are doc numbers (`doc_no`), not positions in the shipped factory bank, which is one bank sorted by category ([06](06-presets-and-state.md)).
+
 Four factory sounds designed to demonstrate different gate patterns and how the
 effect combines with dynamics, delay, and reverb. They follow the existing
 factory banks without changing their indices.

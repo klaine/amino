@@ -1,4 +1,4 @@
-/* Preset browser drawer: factory presets with search, bank / type / favourite
+/* Preset browser drawer: factory presets with search, type / favourite
  * filters and keyboard browsing, plus Load Layer into the focused layer.
  * Loaded on first open (layout.js presetNav).
  *
@@ -42,7 +42,7 @@ async function build(store, nav) {
   const presets = lib.presets;
   const cats = lib.categories;
   const favourites = readFavourites();
-  const filter = { q: "", bank: "", cat: "", fav: false, tab: "presets" };
+  const filter = { q: "", cat: "", fav: false, tab: "presets" };
 
   const back = el("div", "drawer-back");
   const panel = el("aside", "drawer drawer-left");
@@ -75,19 +75,15 @@ async function build(store, nav) {
     b.onclick = onClick;
     return b;
   };
-  const banks = [...new Set(presets.map((p) => p.bank))];
   const types = [...new Set(presets.map((p) => p.category))];
   const drawChips = () => {
     chips.textContent = "";
     if (filter.tab !== "presets") return;
     chips.append(
       chip("★ Favourites", filter.fav, () => { filter.fav = !filter.fav; refresh(); }),
-      chip("All banks", !filter.bank, () => { filter.bank = ""; refresh(); }),
-      ...banks.map((b) => chip(b, filter.bank === b, () => { filter.bank = filter.bank === b ? "" : b; refresh(); })),
+      chip("All types", !filter.cat, () => { filter.cat = ""; refresh(); }),
+      ...types.map((c) => chip(cats[c] || c, filter.cat === c, () => { filter.cat = filter.cat === c ? "" : c; refresh(); }, c)),
     );
-    const row2 = el("div", "filter-break");
-    chips.append(row2, chip("All types", !filter.cat, () => { filter.cat = ""; refresh(); }),
-      ...types.map((c) => chip(cats[c] || c, filter.cat === c, () => { filter.cat = filter.cat === c ? "" : c; refresh(); }, c)));
   };
 
   /* ---- rows */
@@ -96,9 +92,8 @@ async function build(store, nav) {
   const matches = (p) => {
     const q = filter.q;
     if (filter.fav && !favourites.has(p.name)) return false;
-    if (filter.bank && p.bank !== filter.bank) return false;
     if (filter.cat && p.category !== filter.cat) return false;
-    return !q || (p.name + " " + p.bank + " " + (cats[p.category] || "")).toLowerCase().includes(q);
+    return !q || (p.name + " " + (cats[p.category] || "")).toLowerCase().includes(q);
   };
   const drawPresets = () => {
     const current = nav.index();
@@ -119,7 +114,7 @@ async function build(store, nav) {
         if (filter.fav) refresh();
       };
       b.append(el("span", "num", String(i).padStart(3, "0")), star, el("span", "name", p.name),
-        el("span", "cat", cats[p.category] || p.category), el("span", "bank", p.bank));
+        el("span", "cat", cats[p.category] || p.category));
       b.onclick = () => { load(i); hide(); };
       list.appendChild(b);
       rows.push({ i, b });
