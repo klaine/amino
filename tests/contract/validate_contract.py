@@ -128,8 +128,14 @@ def main():
         fail("Main/root must not also host the preset browser")
     presets = levels.get("presets", {})
     if (presets.get("list_param"), presets.get("count_param"),
-            presets.get("name_param")) != ("preset", "preset_count", "preset_name"):
-        fail("presets level is missing the factory preset browser selectors")
+            presets.get("name_param")) != ("pb_index", "pb_count", "preset_name"):
+        fail("presets level must browse the category view (pb_index/pb_count)")
+    category = levels.get("category", {})
+    if (category.get("items_param"), category.get("select_param"),
+            category.get("navigate_to")) != ("pb_cats", "pb_cat", "presets"):
+        fail("category level must choose pb_cat and land on the Presets browser")
+    if "pb_cat" not in meta.get("osc1_wave", {}).get("viz", {}).get("extra_keys", []):
+        fail("pb_cat must be a viz extra key so the Remote UI follows the device's category")
 
     for key in ("osc1_wave", "osc2_wave", "osc1_semi", "osc2_semi"):
         if not meta.get(key, {}).get("display") == "big":

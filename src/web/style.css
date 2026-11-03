@@ -19,6 +19,19 @@
   --global: #9fc3ff;
   --radius: 10px;
   --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  /* The shared preset browser (presetbrowser.css) in Amino's colours: its
+     accent follows the focused layer, like every per-layer control. */
+  --pb-bg: var(--panel);
+  --pb-field: var(--panel-2);
+  --pb-raised: var(--raised);
+  --pb-line: var(--line);
+  --pb-line-2: var(--line-2);
+  --pb-text: var(--text);
+  --pb-dim: var(--dim);
+  --pb-faint: var(--faint);
+  --pb-accent: var(--layer);
+  --pb-on-accent: var(--bg);
+  --pb-mono: var(--mono);
 }
 :root[data-layer="2"] { --layer: var(--l2); }
 :root[data-layer="3"] { --layer: var(--l3); }

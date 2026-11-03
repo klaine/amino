@@ -67,73 +67,23 @@ function group(title, ...rows) {
 
 /* ------------------------------------------------------------ header */
 
+/* The preset name until the shared browser (presets.js, presetbrowser.js)
+ * mounts in its place: it loads with the library after first paint, which
+ * keeps it out of the initial payload (docs/05 9.2). */
 function presetNav(store) {
-  const count = store.meta.presetCount || 0;
-  // Names arrive with the lazily loaded library; stepping only
-  // needs the count, so it works before then.
-  let presets = [];
-  loadLibraryWhenIdle().then((lib) => {
-    presets = lib.presets;
-    paint();
-  });
   const wrap = el("div", "preset-nav");
   const prev = el("button", "icon-btn", "‹");
   const next = el("button", "icon-btn", "›");
-  prev.setAttribute("aria-label", "Previous preset");
-  next.setAttribute("aria-label", "Next preset");
-  const name = el("button", "preset-name");
-  name.setAttribute("aria-haspopup", "dialog");
-  name.title = "Browse presets";
-  const nameText = el("span", "preset-title");
-  const nameMeta = el("span", "preset-meta");
-  name.append(nameMeta, nameText);
+  prev.disabled = next.disabled = true;
+  const name = el("div", "preset-name");
+  const title = el("span", "preset-title");
+  name.append(el("span", "preset-meta", "Presets"), title);
   wrap.append(prev, name, next);
-
-  // The device reports preset -1 once the sound is edited; stepping still
-  // continues from the preset it started as.
-  let last = -1;
-  const reported = () => {
-    const i = parseInt(store.get("preset"), 10);
-    return Number.isInteger(i) && i >= 0 && i < count ? i : -1;
-  };
-  const index = () => {
-    const i = reported();
-    if (i >= 0) return (last = i);
-    if (last < 0 && presets.length) {
-      const name = (store.get("preset_name") || "").trim().toLowerCase();
-      last = presets.findIndex((p) => p.name.toLowerCase() === name);
-    }
-    return last;
-  };
-  const load = (i) => {
-    if (i < 0 || i >= count) return;
-    if (i === reported()) return; // already loaded and unedited: nothing to do or undo
-    store.history?.bulk("Load " + (presets[i] ? presets[i].name : "preset " + String(i).padStart(3, "0")));
-    store.history?.resetCompare();
-    last = i;
-    store.values.preset = String(i);
-    store.send("preset", i);
-    paint();
-  };
-  const paint = () => {
-    const i = index();
-    const p = presets[i];
-    const edited = i >= 0 && reported() < 0;
-    nameText.textContent = store.get("preset_name") || (p && p.name) || "Init";
-    nameMeta.textContent = i >= 0
-      ? String(i).padStart(3, "0") + (edited ? " · edited" : "")
-      : "—";
-    prev.disabled = i <= 0;
-    next.disabled = i >= count - 1;
-  };
-  prev.onclick = () => load(index() - 1);
-  next.onclick = () => load(index() + 1);
-  store.bind("preset", paint);
-  store.bind("preset_name", paint);
-
-  /* The full browser loads on first open (presets.js). */
-  name.onclick = () => import("./presets.js")
-    .then((m) => m.openPresetBrowser(store, { index, load }, name));
+  const b = store.bind("preset_name", (v) => { title.textContent = v || "Init"; });
+  loadLibraryWhenIdle()
+    .then(() => import("./presets.js"))
+    .then((m) => m.mountPresetNav(store, wrap))
+    .then(() => b.unbind(), (err) => console.error("preset browser", err));
   return wrap;
 }
 

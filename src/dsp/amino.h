@@ -176,6 +176,8 @@ typedef struct AminoInstance {
     uint64_t clock;            /* samples since instance start */
     int preset_index;
     char preset_name[AMINO_PRESET_NAME];
+    int browse_cat;            /* pb_cat: 0 = All, n = amino_browse_cats[n - 1] */
+    int browse_last;           /* last factory preset loaded; stepping continues from it once edited */
     int load_preset;           /* pending Load Layer source */
     int load_layer;
     float sm_master;

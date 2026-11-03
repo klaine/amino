@@ -7,10 +7,15 @@ typedef struct { const char *name; const char *category;
                  const char *description; float bpm; uint16_t seed;
                  uint16_t value_count; const AminoPresetValue *values; } AminoFactoryPreset;
 typedef struct { uint16_t preset; uint8_t layer; const char *label; } AminoLayerSource;
+typedef struct { const char *label; uint16_t first; uint16_t count; } AminoBrowseCat;
 extern const AminoFactoryPreset amino_factory_presets[];
 extern const int amino_factory_preset_count;
 extern const AminoLayerSource amino_layer_sources[];
 extern const int amino_layer_source_count;
 extern const char amino_layer_src_list_json[];
 extern const char amino_preset_list_json[];
+extern const uint16_t amino_browse_order[];
+extern const AminoBrowseCat amino_browse_cats[];
+extern const int amino_browse_cat_count;
+extern const char amino_browse_cats_json[];
 #endif

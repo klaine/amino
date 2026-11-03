@@ -281,6 +281,7 @@ void amino_apply_preset(AminoInstance *in, int index) {
     for (int i = 0; i < AMINO_MAX_VOICES; i++) amino_voice_init(in, i);
     amino_apply_factory_values(in, index);
     in->preset_index = index;
+    in->browse_last = index;
     copy_name(in->preset_name, amino_factory_presets[index].name);
     for (int li = 0; li < AMINO_MAX_LAYERS; li++)
         amino_rebuild_layer(in, li);
@@ -631,6 +632,33 @@ void amino_state_set(AminoInstance *in, const char *json) {
     }
 }
 
+/* ------------------------------------------------------------------ browse view */
+
+/* The device's Presets page steps through one category (pb_cat), the same
+ * filter the Remote UI's header steps through.  Positions index the category;
+ * `preset` stays the absolute factory index. */
+static int browse_count(const AminoInstance *in) {
+    if (in->browse_cat <= 0) return amino_factory_preset_count;
+    return amino_browse_cats[in->browse_cat - 1].count;
+}
+
+static int browse_preset(const AminoInstance *in, int pos) {
+    if (in->browse_cat <= 0) return pos;
+    return amino_browse_order[amino_browse_cats[in->browse_cat - 1].first + pos];
+}
+
+/* Position of the current preset (or the last one loaded, once edited) in the
+ * category; -1 when it is not in it, so the first step lands on its first. */
+static int browse_pos(const AminoInstance *in) {
+    int cur = in->preset_index >= 0 ? in->preset_index : in->browse_last;
+    if (cur < 0 || cur >= amino_factory_preset_count) return -1;
+    if (in->browse_cat <= 0) return cur;
+    const AminoBrowseCat *c = &amino_browse_cats[in->browse_cat - 1];
+    for (int i = 0; i < c->count; i++)
+        if (amino_browse_order[c->first + i] == cur) return i;
+    return -1;
+}
+
 /* ------------------------------------------------------------------ get */
 
 static int copy_out(const char *s, char *buf, int len) {
@@ -756,6 +784,18 @@ int amino_param_get(AminoInstance *in, const char *key, char *buf, int len) {
         snprintf(tmp, sizeof tmp, "%d", in->preset_index);
         return copy_out(tmp, buf, len);
     }
+    if (strcmp(key, "pb_cats") == 0)
+        return copy_out(amino_browse_cats_json, buf, len);
+    if (strcmp(key, "pb_cat") == 0 || strcmp(key, "pb_count") == 0 ||
+        strcmp(key, "pb_index") == 0) {
+        char tmp[16];
+        int v;
+        if (strcmp(key, "pb_cat") == 0) v = in->browse_cat;
+        else if (strcmp(key, "pb_count") == 0) v = browse_count(in);
+        else v = browse_pos(in);
+        snprintf(tmp, sizeof tmp, "%d", v);
+        return copy_out(tmp, buf, len);
+    }
     if (strcmp(key, "layer_load_src") == 0) {
         char tmp[16];
         snprintf(tmp, sizeof tmp, "%d", in->load_preset);
@@ -862,6 +902,18 @@ void amino_param_set(AminoInstance *in, const char *key, const char *val) {
         rui_edit(in);
         return;
     }
+    if (strcmp(key, "pb_cat") == 0) {
+        /* Browse state, not sound: no rev bump, and state never carries it. */
+        in->browse_cat = am_clampi((int)strtod(val, 0), 0, amino_browse_cat_count);
+        return;
+    }
+    if (strcmp(key, "pb_index") == 0) {
+        int pos = (int)strtod(val, 0);
+        if (pos < 0 || pos >= browse_count(in)) return;
+        amino_apply_preset(in, browse_preset(in, pos));
+        rui_edit(in);
+        return;
+    }
     if (strcmp(key, "name") == 0 || strcmp(key, "preset_name") == 0) {
         if (strcmp(in->preset_name, val) != 0) {
             copy_name(in->preset_name, val);
@@ -907,7 +959,8 @@ void amino_param_set(AminoInstance *in, const char *key, const char *val) {
         return;
     }
     if (strcmp(key, "preset_count") == 0 || strcmp(key, "fmt") == 0 ||
-        strcmp(key, "v") == 0)
+        strcmp(key, "v") == 0 || strcmp(key, "pb_count") == 0 ||
+        strcmp(key, "pb_cats") == 0)
         return;
 
     int layer, index;

@@ -247,9 +247,21 @@ hardware's 8-knob pages. (The earlier single-file page was retired on
     rate only: the Remote UI does not receive the host tempo.
 - Phase 4, all loaded on first use (dynamic `import()`, styles in
   `lazy.css`):
-  - `presets.js`: preset browser drawer — search, type chips,
-    favourites (localStorage, by name), arrow keys audition, Enter keeps;
-    a Load layer tab loads any factory layer into the focused layer.
+  - `presetbrowser.js`, `presetdrawer.js`, `presetbrowser.css`: the preset
+    browser shared with Bizar and Crest (this repo holds the canonical copy;
+    theirs are byte-identical: Crest's `src/web/`, Bizar's `presetbrowser/`,
+    which `scripts/inline_presetbrowser.py` inlines into its one-file page;
+    each is styled through the `--pb-*` tokens). A module may add banks of
+    its own at run time (`setLibrary`: Crest's converted Peak banks, Bizar's
+    My patches), draw the name area itself (`host.display`: Crest's OLED),
+    and give the drawer tools and deletable rows. One scope
+    (category, bank, favourites) drives the header's ‹ › and `[` `]`, the
+    drawer's list and Move's Presets page; search narrows within it. ↑↓ or a
+    click auditions, Enter or Done keeps, Esc puts back the sound the drawer
+    opened with (edits included, as one `state` write). Favourites are keyed
+    `<bank>/<name>` (localStorage). The header mounts with the library after
+    first paint; `presets.js` is Amino's adapter: `pb_cat` sync, one undo
+    step per visit, and the Load layer tab.
   - `history.js` (after first paint): undo/redo of every edit made in the
     browser (a drag is one step; Cmd/Ctrl+Z, Shift+Cmd+Z / Ctrl+Y) and of
     bulk actions (preset or layer load, Init, Randomise, layer copy, A/B),

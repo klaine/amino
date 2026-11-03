@@ -50,7 +50,7 @@ def ui_files():
             assert old in src, "lazy.js changed: update build_single.py"
             src = src.replace(old, "/* lazy.css is embedded in the page */")
         files["ui/" + name] = src.encode()
-    for css in ("style.css", "lazy.css"):
+    for css in ("style.css", "lazy.css", "presetbrowser.css"):
         files["ui/" + css] = (ASSETS / "ui" / css).read_bytes()
     page = (MODULE / "web_ui.html").read_text(encoding="utf-8")
     page, n1 = re.subn(r'<link rel="stylesheet" href="assets/ui/style.css">', "{{STYLE}}", page)

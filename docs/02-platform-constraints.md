@@ -104,7 +104,8 @@ main UI ourselves. What it gives us for free:
 | Child selectors (`child_count`, `child_key_template`, `child_index_param`) | Layer Tools Copy/Delete picker |
 | Hold Copy/Delete + pick instance (needs `claims_edit_ccs`) | Layer copy / init |
 | `visible_if` (≤ 4 distinct gate params) | Hide layer & FX-type-specific controls |
-| Preset browser (`list_param`/`count_param`/`name_param`) | Factory bank |
+| Preset browser (`list_param`/`count_param`/`name_param`) | Factory bank, one category at a time |
+| Items list + `navigate_to` (`items_param`/`select_param`) | Category picker that lands on the browser |
 | "My Presets" + "Module" pages auto-appended | User presets |
 | `canvas` + `as_page` + `drawPage` | Wave display page |
 | `card_script` | Mod-slot card while turning amount |

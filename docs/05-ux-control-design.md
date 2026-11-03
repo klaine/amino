@@ -69,10 +69,18 @@ Notation: `[k1 k2 k3 k4 | k5 k6 k7 k8]` — top row | bottom row.
 the device header identifies both page and layer, e.g. `Filter (L1)`.
 
 ### 4.1 Presets
-Preset browser (`list_param: preset`, `count_param: preset_count`,
-`name_param: preset_name`). Jog browses, click enters/auditions, Back leaves.
+Two pages, the first section. **Presets** is the preset browser (`list_param:
+pb_index`, `count_param: pb_count`, `name_param: preset_name`): it steps through
+the chosen category only. Jog browses, click enters/auditions, Back leaves.
 Knobs remain mapped to the Main page params while browsing (host behaviour), so a
-preset can be tweaked mid-browse.
+preset can be tweaked mid-browse. **Category** (`items_param: pb_cats`,
+`select_param: pb_cat`) lists All and each category with its count; choosing one
+lands on Presets, already entered.
+
+The category is shared with the Remote UI (`pb_cat` is a viz extra key): its
+header ‹ › steps through the same set, and a chip chosen there changes the
+device's. `preset` stays the absolute factory index that patches and `state` use;
+the browse view is never saved.
 
 ### 4.2 Main — "the 8 knobs you want"
 `[Cutoff Res Wave1 Wave2 | F.Env Attack Release Flavour]`

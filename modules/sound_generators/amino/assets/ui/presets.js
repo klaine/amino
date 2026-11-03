@@ -1,203 +1,142 @@
-/* Preset browser drawer: factory presets with search, type / favourite
- * filters and keyboard browsing, plus Load Layer into the focused layer.
- * Loaded on first open (layout.js presetNav).
- *
- * Browsing with the arrow keys loads each preset as it is selected, the way
- * stepping works on Move; Enter or a click loads and closes.  Favourites are
- * kept per browser (localStorage), by preset name.
+/* Amino's side of the shared preset browser (presetbrowser.js): the factory
+ * library from ui_presets.json, the device's browse category (pb_cat, shared
+ * with Move's Category page), undo steps and the Load Layer tab.  Mounted into
+ * the header placeholder once the library has loaded (layout.js presetNav).
  */
+import { BrowseModel, presetHeader, storedFavourites } from "./presetbrowser.js";
 import { loadLibrary } from "./library.js";
-import { lazyStyles } from "./lazy.js";
+import { snapshot } from "./history.js";
+import { wireValue } from "./format.js";
+import { ECHO_HOLD_MS } from "./store.js";
 
-lazyStyles();
+const FAV_KEY = "amino.favourites.v2";
 
-const FAV_KEY = "amino.favourites";
-
-function el(tag, cls, text) {
-  const e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (text !== undefined) e.textContent = text;
-  return e;
+/** Amino 1.1 kept favourites by bare name; carry them over once as "<bank>/<name>". */
+function favourites() {
+  try {
+    if (localStorage.getItem(FAV_KEY) === null) {
+      const old = JSON.parse(localStorage.getItem("amino.favourites") || "[]");
+      localStorage.setItem(FAV_KEY, JSON.stringify(old.map((name) => "factory/" + name)));
+    }
+  } catch (e) { /* no storage */ }
+  return storedFavourites(FAV_KEY);
 }
 
-function readFavourites() {
-  try { return new Set(JSON.parse(localStorage.getItem(FAV_KEY) || "[]")); } catch (e) { return new Set(); }
-}
-function writeFavourites(set) {
-  try { localStorage.setItem(FAV_KEY, JSON.stringify([...set])); } catch (e) { /* private mode */ }
-}
-
-let drawer = null;
-
-/**
- * Open the browser.  `nav` is presetNav's controller: { index(), load(i) }.
- */
-export async function openPresetBrowser(store, nav, opener) {
-  if (!drawer) drawer = await build(store, nav);
-  drawer.open(opener);
-}
-
-async function build(store, nav) {
+export async function mountPresetNav(store, slot) {
   const lib = await loadLibrary();
-  const presets = lib.presets;
-  const cats = lib.categories;
-  const favourites = readFavourites();
-  const filter = { q: "", cat: "", fav: false, tab: "presets" };
+  const model = new BrowseModel(lib, favourites());
+  const presets = model.presets;
 
-  const back = el("div", "drawer-back");
-  const panel = el("aside", "drawer drawer-left");
-  panel.setAttribute("role", "dialog");
-  panel.setAttribute("aria-modal", "true");
-  panel.setAttribute("aria-label", "Preset browser");
-  const head = el("div", "drawer-head");
-  const tabs = el("div", "seg");
-  const tabPresets = el("button", "seg-btn on", "Presets");
-  const tabLayers = el("button", "seg-btn", "Load layer");
-  tabs.append(tabPresets, tabLayers);
-  const close = el("button", "icon-btn", "×");
-  close.setAttribute("aria-label", "Close preset browser");
-  head.append(tabs, close);
-  const search = el("input", "search");
-  search.type = "search";
-  search.setAttribute("aria-label", "Search");
-  const chips = el("div", "filter-chips");
-  const list = el("div", "browser-list");
-  list.setAttribute("role", "listbox");
-  const foot = el("div", "drawer-foot");
-  panel.append(head, search, chips, list, foot);
-  document.body.append(back, panel);
-
-  /* ---- filter chips */
-  const chip = (label, active, onClick, title) => {
-    const b = el("button", "filter-chip" + (active ? " on" : ""), label);
-    b.type = "button";
-    if (title) b.title = title;
-    b.onclick = onClick;
-    return b;
+  // The device reports preset -1 once the sound is edited; stepping still
+  // continues from the preset it started as.
+  let last = -1;
+  const reported = () => {
+    const i = parseInt(store.get("preset"), 10);
+    return Number.isInteger(i) && i >= 0 && i < presets.length ? i : -1;
   };
-  const types = [...new Set(presets.map((p) => p.category))];
-  const drawChips = () => {
-    chips.textContent = "";
-    if (filter.tab !== "presets") return;
-    chips.append(
-      chip("★ Favourites", filter.fav, () => { filter.fav = !filter.fav; refresh(); }),
-      chip("All types", !filter.cat, () => { filter.cat = ""; refresh(); }),
-      ...types.map((c) => chip(cats[c] || c, filter.cat === c, () => { filter.cat = filter.cat === c ? "" : c; refresh(); }, c)),
-    );
-  };
-
-  /* ---- rows */
-  let rows = [];        // [{ i, button }] currently shown
-  let cursor = -1;      // index into rows
-  const matches = (p) => {
-    const q = filter.q;
-    if (filter.fav && !favourites.has(p.name)) return false;
-    if (filter.cat && p.category !== filter.cat) return false;
-    return !q || (p.name + " " + (cats[p.category] || "")).toLowerCase().includes(q);
-  };
-  const drawPresets = () => {
-    const current = nav.index();
-    rows = [];
-    presets.forEach((p, i) => {
-      if (!matches(p)) return;
-      const b = el("div", "browser-row" + (i === current ? " on" : ""));
-      b.setAttribute("role", "option");
-      b.setAttribute("aria-selected", String(i === current));
-      const star = el("button", "star" + (favourites.has(p.name) ? " on" : ""), "★");
-      star.type = "button";
-      star.setAttribute("aria-label", (favourites.has(p.name) ? "Remove " : "Add ") + p.name + " favourite");
-      star.onclick = (e) => {
-        e.stopPropagation();
-        if (favourites.has(p.name)) favourites.delete(p.name); else favourites.add(p.name);
-        writeFavourites(favourites);
-        star.classList.toggle("on", favourites.has(p.name));
-        if (filter.fav) refresh();
-      };
-      b.append(el("span", "num", String(i).padStart(3, "0")), star, el("span", "name", p.name),
-        el("span", "cat", cats[p.category] || p.category));
-      b.onclick = () => { load(i); hide(); };
-      list.appendChild(b);
-      rows.push({ i, b });
-    });
-    foot.textContent = rows.length + " of " + presets.length + " presets · ↑↓ to audition, Enter to keep";
-    cursor = rows.findIndex((r) => r.i === current);
-  };
-  const drawLayers = () => {
-    rows = [];
-    const q = filter.q;
-    lib.layerSources.forEach((label, i) => {
-      if (q && !label.toLowerCase().includes(q)) return;
-      const b = el("div", "browser-row");
-      b.setAttribute("role", "option");
-      const [name, layer] = label.split("/");
-      b.append(el("span", "num", layer), el("span", "name", name));
-      b.onclick = () => loadLayer(i, label);
-      list.appendChild(b);
-      rows.push({ i, b });
-    });
-    foot.textContent = "Replaces layer " + store.layer + " with the chosen source layer · " + rows.length + " sources";
-    cursor = -1;
-  };
-  const refresh = () => {
-    list.textContent = "";
-    search.placeholder = filter.tab === "presets" ? "Search " + presets.length + " presets" : "Search layer sources";
-    tabPresets.classList.toggle("on", filter.tab === "presets");
-    tabLayers.classList.toggle("on", filter.tab === "layers");
-    drawChips();
-    if (filter.tab === "presets") drawPresets(); else drawLayers();
-    rows[cursor]?.b.scrollIntoView({ block: "nearest" });
-  };
-
-  const load = (i) => {
-    nav.load(i); // records the undo step and resets A/B
-    rows.forEach((r) => {
-      r.b.classList.toggle("on", r.i === i);
-      r.b.setAttribute("aria-selected", String(r.i === i));
-    });
-  };
-  const loadLayer = (i, label) => {
-    store.history?.bulk("Load layer " + label);
-    store.send("layer_load_src", String(i));
-    foot.textContent = "Loaded " + label + " into layer " + store.layer;
-  };
-
-  /* ---- open / close / keys */
-  let opener = null;
-  const hide = () => {
-    panel.classList.remove("open");
-    back.classList.remove("open");
-    opener?.focus();
-  };
-  close.onclick = hide;
-  back.onclick = hide;
-  tabPresets.onclick = () => { filter.tab = "presets"; refresh(); };
-  tabLayers.onclick = () => { filter.tab = "layers"; refresh(); };
-  search.oninput = () => { filter.q = search.value.trim().toLowerCase(); refresh(); };
-  panel.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") { e.preventDefault(); hide(); return; }
-    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-      if (!rows.length) return;
-      e.preventDefault();
-      cursor = Math.max(0, Math.min(rows.length - 1, cursor + (e.key === "ArrowDown" ? 1 : -1)));
-      rows.forEach((r, k) => r.b.classList.toggle("cursor", k === cursor));
-      rows[cursor].b.scrollIntoView({ block: "nearest" });
-      if (filter.tab === "presets") load(rows[cursor].i);
+  const current = () => {
+    const i = reported();
+    if (i >= 0) return (last = i);
+    if (last < 0) {
+      const name = (store.get("preset_name") || "").trim().toLowerCase();
+      last = presets.findIndex((p) => p.name.toLowerCase() === name);
     }
-    if (e.key === "Enter" && rows[cursor]) {
-      e.preventDefault();
-      rows[cursor].b.click();
+    return last;
+  };
+  const send = (i) => {
+    last = i;
+    store.values.preset = String(i);
+    store.send("preset", i);
+  };
+  /** Put back an edited sound: one state write, and the cache follows at once. */
+  const restore = (snap) => {
+    const blob = { name: snap.preset_name || "" };
+    for (const key in snap) {
+      if (key !== "preset_name" && snap[key] !== undefined) blob[key] = wireValue(store.metaFor(key) || {}, snap[key]);
     }
-  });
-  // Keep the highlight right when the preset changes elsewhere.
-  store.bind("preset", () => { if (panel.classList.contains("open") && filter.tab === "presets") refresh(); });
+    store.send("state", JSON.stringify(blob));
+    const hold = store.now() + ECHO_HOLD_MS;
+    for (const key in snap) {
+      if (snap[key] === undefined || store.values[key] === snap[key]) continue;
+      store.values[key] = snap[key];
+      store.holdUntil[key] = hold;
+      store.repaint(key);
+    }
+    store.values.preset = "-1";
+    store.repaint("preset");
+  };
 
-  return {
-    open(from) {
-      opener = from || null;
-      refresh();
-      panel.classList.add("open");
-      back.classList.add("open");
-      search.focus();
+  // One undo step per visit to the browser: the first audition records it and
+  // later ones rename it, so ↑↓ through twenty presets is one Undo.
+  let visit = null; // { index, snap, entry }
+  const host = {
+    noun: "preset",
+    current,
+    edited: () => current() >= 0 && reported() < 0,
+    name: () => store.get("preset_name") || "",
+    load(i, { audition = false } = {}) {
+      if (i === reported()) return; // already loaded and unedited: nothing to do or undo
+      const h = store.history;
+      const label = "Load " + presets[i].name;
+      if (audition && visit && visit.entry) {
+        visit.entry.label = label;
+        h?.emit();
+      } else {
+        h?.bulk(label);
+        if (audition && visit && h) visit.entry = h.undos[h.undos.length - 1];
+      }
+      h?.resetCompare();
+      send(i);
     },
+    begin() { visit = { index: reported(), snap: snapshot(store), entry: null }; },
+    keep() { visit = null; },
+    revert() {
+      if (!visit) return;
+      if (visit.index >= 0) send(visit.index); else restore(visit.snap);
+      const h = store.history;
+      if (h && visit.entry && h.undos[h.undos.length - 1] === visit.entry) {
+        h.undos.pop();
+        h.emit();
+      }
+      visit.entry = null;
+    },
+    onChange(fn) {
+      store.bind("preset", fn);
+      store.bind("preset_name", fn);
+    },
+    views: [{
+      label: "Load layer",
+      placeholder: "Search layer sources",
+      unit: "sources · the chosen layer replaces the focused one",
+      rows: (q) => lib.layerSources.map((label, i) => {
+        const [name, layer] = label.split("/");
+        return { i, label, num: layer, name, note: "" };
+      }).filter((r) => !q || r.label.toLowerCase().includes(q)),
+      pick(r) {
+        store.history?.bulk("Load layer " + r.label);
+        store.send("layer_load_src", String(r.i));
+        return "Loaded " + r.label + " into layer " + store.layer;
+      },
+    }],
   };
+
+  // The category is the device's: Move's Category page and the chips set the
+  // same pb_cat (0 = All, n = categories[n - 1]).
+  model.onChange((what) => {
+    if (what !== "scope") return;
+    const n = String(model.scope.cat ? model.categories.findIndex((c) => c.id === model.scope.cat) + 1 : 0);
+    if (store.get("pb_cat") === n) return;
+    store.values.pb_cat = n;
+    store.holdUntil.pb_cat = store.now() + ECHO_HOLD_MS;
+    store.send("pb_cat", n);
+  });
+  store.bind("pb_cat", (v) => {
+    const c = model.categories[parseInt(v, 10) - 1];
+    model.setScope({ cat: c ? c.id : "" });
+  });
+
+  const nav = presetHeader(model, host);
+  nav.classList.add("preset-nav");
+  slot.replaceWith(nav);
+  return nav;
 }

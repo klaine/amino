@@ -194,6 +194,58 @@ static void regression_tests(plugin_api_v2_t *api) {
         api->destroy_instance(in);
     }
 
+    /* The category browse view (pb_*): Presets steps within pb_cat. */
+    {
+        void *in = api->create_instance("", 0);
+        static char got[65536];
+        char want[64];
+        api->get_param(in, "pb_cat", got, sizeof got);
+        CHECK(strcmp(got, "0") == 0, "browse starts on All");
+        api->get_param(in, "pb_count", got, sizeof got);
+        snprintf(want, sizeof want, "%d", amino_factory_preset_count);
+        CHECK(strcmp(got, want) == 0, "All counts every factory preset");
+        api->get_param(in, "pb_index", got, sizeof got);
+        CHECK(strcmp(got, "0") == 0, "All positions are factory indices");
+        api->get_param(in, "pb_cats", got, sizeof got);
+        snprintf(want, sizeof want, "[{\"index\":0,\"label\":\"All (%d)\"}", amino_factory_preset_count);
+        CHECK(strncmp(got, want, strlen(want)) == 0, "Category list opens with All");
+
+        const AminoBrowseCat *bass = 0;
+        int bass_n = 0;
+        for (int i = 0; i < amino_browse_cat_count; i++)
+            if (strcmp(amino_browse_cats[i].label, "Bass") == 0) { bass = &amino_browse_cats[i]; bass_n = i + 1; }
+        CHECK(bass != 0 && bass->count > 4, "Bass is a browse category");
+        snprintf(want, sizeof want, "%d", bass_n);
+        api->set_param(in, "pb_cat", want);
+        CHECK(api->get_param(in, "state", got, sizeof got) > 0 && strstr(got, "pb_") == 0,
+              "state never carries the browse view");
+        api->get_param(in, "pb_count", got, sizeof got);
+        snprintf(want, sizeof want, "%d", bass->count);
+        CHECK(strcmp(got, want) == 0, "pb_count is the category's size");
+        api->get_param(in, "pb_index", got, sizeof got);
+        CHECK(strcmp(got, "-1") == 0, "Init is not in Bass");
+
+        api->set_param(in, "pb_index", "3");
+        int expect = amino_browse_order[bass->first + 3];
+        api->get_param(in, "preset", got, sizeof got);
+        snprintf(want, sizeof want, "%d", expect);
+        CHECK(strcmp(got, want) == 0, "pb_index loads the category's preset");
+        api->get_param(in, "preset_name", got, sizeof got);
+        CHECK(strcmp(got, amino_factory_presets[expect].name) == 0, "and its name");
+        api->set_param(in, "l1_cutoff", "12");
+        api->get_param(in, "pb_index", got, sizeof got);
+        CHECK(strcmp(got, "3") == 0, "an edited sound keeps its browse position");
+
+        api->set_param(in, "pb_index", "9999");
+        api->get_param(in, "preset", got, sizeof got);
+        CHECK(strcmp(got, "-1") == 0, "an out-of-range position loads nothing");
+        api->set_param(in, "pb_cat", "99");
+        api->get_param(in, "pb_cat", got, sizeof got);
+        snprintf(want, sizeof want, "%d", amino_browse_cat_count);
+        CHECK(strcmp(got, want) == 0, "pb_cat clamps to the last category");
+        api->destroy_instance(in);
+    }
+
     /* LFO to Amp must not step at the 16-sample control rate. */
     {
         double share[2];

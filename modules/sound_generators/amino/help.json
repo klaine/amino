@@ -230,9 +230,19 @@
                 {
                     "title": "Presets",
                     "lines": [
-                        "Browse preset bank.",
-                        "Jog selects; click",
-                        "to audition."
+                        "Click in, then jog",
+                        "to audition each",
+                        "preset of the",
+                        "chosen Category."
+                    ]
+                },
+                {
+                    "title": "Category",
+                    "lines": [
+                        "Pick a category;",
+                        "Presets then jogs",
+                        "only through it.",
+                        "All lists every one."
                     ]
                 },
                 {

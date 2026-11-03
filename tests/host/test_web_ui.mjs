@@ -28,6 +28,7 @@ import {
 import { ModModel, sourceColor } from "../../src/web/mod.js";
 import { History, snapshot } from "../../src/web/history.js";
 import { parseLive } from "../../src/web/live.js";
+import { BrowseModel, storedFavourites } from "../../src/web/presetbrowser.js";
 
 const meta = expandMeta(JSON.parse(readFileSync(
     new URL("../../modules/sound_generators/amino/assets/ui_meta.json", import.meta.url))));
@@ -429,6 +430,76 @@ function harness() {
     h.resetCompare();
     assert.equal(h.compare.active, "A");
     assert.equal(h.compare.slots.B, null);
+}
+
+/* ---------------------------------------------------------------- preset browser */
+{
+    // ui_presets.json is the shared library shape, categories in pb_cat order.
+    assert.equal(library.v, 1);
+    assert.deepEqual(library.categories.map((c) => c.id), ["IN", "BS", "LD", "PD", "KY", "PL", "FX", "DR", "ML"]);
+    const ids = new Set(library.categories.map((c) => c.id));
+    for (const p of library.presets) assert.ok(ids.has(p.cat), p.name + " has a listed category");
+
+    const favs = new Set();
+    const memory = { has: (k) => favs.has(k), toggle: (k) => (favs.has(k) ? favs.delete(k) : favs.add(k)) };
+    const m = new BrowseModel(library, memory);
+    const bass = m.list().filter((i) => library.presets[i].cat === "BS");
+    assert.equal(m.scopeLabel(), "All");
+    assert.deepEqual(m.position(5), { pos: 6, count: 324 });
+    assert.equal(m.step(323, 1), 0, "All wraps");
+
+    let events = 0;
+    m.onChange(() => events++);
+    m.setScope({ cat: "BS" });
+    m.setScope({ cat: "BS" });
+    assert.equal(events, 1, "an unchanged scope is not an event");
+    assert.deepEqual(m.list(), bass, "the scope lists the category");
+    assert.equal(m.scopeLabel(), "Bass");
+    assert.equal(m.step(0, 1), bass[0], "from outside the scope, next is its first after");
+    assert.equal(m.step(0, -1), bass[bass.length - 1], "and previous wraps to its last");
+    assert.equal(m.step(bass[bass.length - 1], 1), bass[0], "the scope wraps");
+    assert.equal(m.step(bass[3], -1), bass[2]);
+    assert.deepEqual(m.position(bass[3]), { pos: 4, count: bass.length });
+    assert.equal(m.position(0).pos, 0, "outside the scope has no position");
+    assert.ok(m.list("sub").every((i) => library.presets[i].cat === "BS" && /sub/i.test(library.presets[i].name)),
+        "search narrows within the scope");
+
+    m.toggleFav(bass[2]);
+    m.toggleFav(0);
+    assert.ok(favs.has("factory/" + library.presets[bass[2]].name), "favourites are <bank>/<name>");
+    m.setScope({ fav: true });
+    assert.deepEqual(m.list(), [bass[2]], "favourites and category combine");
+    assert.equal(m.scopeLabel(), "★ Bass");
+    assert.equal(m.step(bass[2], 1), bass[2], "a one-preset scope stays put");
+    m.setScope({ cat: "" });
+    assert.deepEqual(m.list(), [0, bass[2]]);
+    assert.equal(m.scopeLabel(), "★");
+    m.setScope({ fav: false });
+    assert.equal(m.scoped, false);
+
+    // A module's own bank (saved patches, imported banks) joins at run time.
+    const n = library.presets.length;
+    const mine = { ...library, banks: [...library.banks, { id: "user", label: "My presets" }],
+        presets: [...library.presets, { name: "Mine 1", cat: "", bank: "user" }, { name: "Mine 2", cat: "BS", bank: "user" }] };
+    let what = "";
+    m.onChange((w) => { what = w; });
+    m.setLibrary(mine);
+    assert.equal(what, "library");
+    assert.equal(m.number(n + 1), 2, "numbers count within the bank");
+    assert.equal(m.number(5), 6);
+    assert.equal(m.bankCount("user"), 2);
+    m.setScope({ bank: "user" });
+    assert.deepEqual(m.list(), [n, n + 1]);
+    assert.equal(m.scopeLabel(), "My presets");
+    m.setScope({ cat: "BS" });
+    assert.deepEqual(m.list(), [n + 1], "bank and category combine");
+    m.setLibrary(library);
+    assert.equal(m.scope.bank, "", "a removed bank leaves the scope");
+    m.setScope({ cat: "" });
+
+    const empty = new BrowseModel({ presets: [] }, memory);
+    assert.equal(empty.step(-1, 1), -1, "an empty scope steps nowhere");
+    assert.equal(storedFavourites("x").has("y"), false, "favourites work without storage");
 }
 
 console.log("web ui tests passed");

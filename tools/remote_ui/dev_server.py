@@ -114,6 +114,12 @@ class Synth:
         with self.lock:
             return self.engine.get(key)
 
+    def initial(self):
+        """A new client's first burst: the manager sends the viz extras with it."""
+        with self.lock:
+            extras = {k: self.engine.get(k) for k in self.extra_keys}
+        return dict({k: v for k, v in extras.items() if v is not None}, **self.values)
+
     def midi(self, msg):
         with self.lock:
             self.engine.midi(*msg)
@@ -226,7 +232,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send("forbidden", "text/plain", 403)
             return self._file(module_file(rel))
         if path == "/api/params":
-            return self._json(self.synth.values)
+            return self._json(self.synth.initial())
         if path == "/api/chain_params":
             return self._send(self.synth.get("chain_params") or "null", "application/json")
         if path == "/api/hierarchy":

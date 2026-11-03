@@ -59,7 +59,8 @@ window.fetch = (url, opts) => {
   return Promise.resolve(new Response(bytes.slice(), { status: 200, headers: { "Content-Type": type } }));
 };`;
     return emb.text("ui.html")
-      .replace("{{STYLE}}", () => "<style>" + emb.text("ui/style.css") + "\n" + emb.text("ui/lazy.css") + "</style>")
+      .replace("{{STYLE}}", () => "<style>" + emb.text("ui/style.css") + "\n" + emb.text("ui/lazy.css")
+        + "\n" + emb.text("ui/presetbrowser.css") + "</style>")
       .replace("{{SCRIPTS}}", () =>
         '<script type="importmap">' + JSON.stringify({ imports: map }) + "<\/script>"
         + "<script>" + shim + "<\/script>"

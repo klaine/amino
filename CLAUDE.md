@@ -49,3 +49,6 @@ python3 tools/remote_ui/dev_server.py   # Remote UI harness on http://localhost:
 - `../Original reference/` (outside this repo) is the original spec and preset set Amino was built
   from.
 - Crest's effects were adapted from Amino's `src/dsp/fx.c`: a fix here may apply there too.
+- `src/web/presetbrowser.js`, `presetdrawer.js` and `presetbrowser.css` are the canonical shared preset
+  browser. Crest (`src/web/`) and Bizar (`presetbrowser/`) carry byte-identical copies: after changing
+  them, copy them over and run both modules' tests.
