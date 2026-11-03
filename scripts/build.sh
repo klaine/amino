@@ -105,7 +105,8 @@ DEFS=""
 rm -f "$MODULE/dsp.so.o"
 
 echo "== package"
-# COPYFILE_DISABLE keeps macOS tar from adding ._ AppleDouble files
-COPYFILE_DISABLE=1 tar -czf "$ROOT/amino-module.tar.gz" \
+# COPYFILE_DISABLE keeps macOS tar from adding ._ AppleDouble files; --numeric-owner leaves the
+# builder's user and group names out of the headers, --no-xattrs the com.apple.* attributes
+COPYFILE_DISABLE=1 tar -czf "$ROOT/amino-module.tar.gz" --numeric-owner --no-xattrs \
   --exclude '.DS_Store' -C "$ROOT/modules/sound_generators" amino
 echo "built $MODULE/dsp.so and $ROOT/amino-module.tar.gz"
