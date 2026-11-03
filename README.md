@@ -39,13 +39,25 @@ debug log.
 
 ## How it works
 
-Each voice of each layer runs this path:
+Each voice of each layer runs this path, and each layer goes to the output dry or through an
+effect slot:
 
-```
-Osc 1 ──┐
-Osc 2 ──┼─ mix ─ Drive ─ Filter ─ VCA + pan ─┐
-Dirt  ──┘  (Drive before or after the filter) ├─ layer bus ─ dry, FX 1 or FX 2 ─ out
-                                other voices ─┘
+```mermaid
+flowchart LR
+    subgraph voice [Each voice]
+        O2[Osc 2] -.->|PM / AM / Sync| O1[Osc 1]
+        O1 --> MIX[Mix]
+        O2 --> MIX
+        DIRT["Dirt (noise, or Osc 1 × Osc 2 ring)"] --> MIX
+        MIX --> DRV["Drive (before or after the filter)"] --> F[Filter] --> VCA["VCA + pan"]
+    end
+    VCA --> BUS["Layer bus (up to 4 layers)"]
+    BUS -->|Dry| OUT([Out])
+    BUS -->|FX 1 × send| FX1[FX 1]
+    BUS -->|FX 2 × send| FX2[FX 2]
+    FX1 -->|Parallel| OUT
+    FX1 -.->|Serial| FX2
+    FX2 --> OUT
 ```
 
 Everything below is on Move's parameter pages and in the Remote UI.
