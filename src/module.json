@@ -1,7 +1,7 @@
 {
     "id": "amino",
     "name": "Amino",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "abbrev": "AMNO",
     "api_version": 2,
     "ui_chain": "ui_chain.js",
