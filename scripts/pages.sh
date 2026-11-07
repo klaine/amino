@@ -3,12 +3,15 @@
 #   scripts/pages.sh             # update the local pages branch (scripts/build_web.sh runs this)
 #   scripts/pages.sh --push      # also push it to origin
 #   scripts/pages.sh --gallery   # also re-render the preset gallery (tools/emulator/gallery.py --site)
+#   scripts/pages.sh --midi DIR  # also replace midi/ (the MIDI loop previews) with the folder DIR
 #
 # The branch is written with git plumbing, so the working tree and the current branch are left
-# alone. It holds one commit with no history (index.html, .nojekyll and gallery/), replaced only
+# alone. It holds one commit with no history (index.html, .nojekyll, gallery/ and midi/), replaced only
 # when something changes, so a multi-MB file doesn't pile up per build; that's why the push is
 # forced. gallery/ (324 MP3 previews) is carried over from the pages branch (local, else origin's) unless
-# --gallery re-renders it, which needs the lameenc package and takes a while.
+# --gallery re-renders it, which needs the lameenc package and takes a while. midi/ (audio previews of
+# the klaine/midi-stash trance and house loops, built there by `tools/render_gallery.py --site DIR`) is
+# carried over the same way, or replaced from DIR with --midi.
 set -eu
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
@@ -16,13 +19,17 @@ cd "$ROOT"
 
 PUSH=0
 GALLERY=0
-for arg in "$@"; do
-  case "$arg" in
+MIDI=""
+while [ $# -gt 0 ]; do
+  case "$1" in
     --push) PUSH=1 ;;
     --gallery) GALLERY=1 ;;
-    -h|--help) sed -n '2,11p' "$0"; exit 0 ;;
-    *) echo "unknown option: $arg" >&2; exit 2 ;;
+    --midi) [ $# -ge 2 ] && [ -f "$2/index.html" ] || { echo "--midi needs a folder with index.html" >&2; exit 2; }
+            MIDI=$2; shift ;;
+    -h|--help) sed -n '2,13p' "$0"; exit 0 ;;
+    *) echo "unknown option: $1" >&2; exit 2 ;;
   esac
+  shift
 done
 
 if ! git rev-parse --git-dir >/dev/null 2>&1; then
@@ -49,6 +56,14 @@ elif PREV=$(git rev-parse -q --verify refs/heads/pages || git rev-parse -q --ver
   git read-tree --prefix=gallery/ "$PREV:gallery"
 else
   echo "== pages: no gallery/ on the pages branch (run scripts/pages.sh --gallery)"
+fi
+if [ -n "$MIDI" ]; then
+  (cd "$MIDI" && find . -type f | sed 's#^\./##' | sort) | while IFS= read -r f; do
+    git update-index --add --cacheinfo "100644,$(git hash-object -w "$MIDI/$f"),midi/$f"
+  done
+elif PREV=$(git rev-parse -q --verify refs/heads/pages || git rev-parse -q --verify refs/remotes/origin/pages) &&
+     git rev-parse -q --verify "$PREV:midi" >/dev/null; then
+  git read-tree --prefix=midi/ "$PREV:midi"
 fi
 TREE=$(git write-tree)
 unset GIT_INDEX_FILE
